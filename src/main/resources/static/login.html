@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+
+    <title>SpendWise AI | Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            width: min(440px, 100%);
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.10);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px #2563eb20;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .login-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .login-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .guest-btn {
+            background: #059669;
+            color: white;
+        }
+
+        .guest-btn:hover {
+            background: #047857;
+        }
+
+        .guest-box {
+            margin-top: 22px;
+            padding: 16px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+        }
+
+        .guest-box h3 {
+            margin: 0 0 12px;
+            color: #166534;
+        }
+
+        .credential {
+            margin: 8px 0;
+            overflow-wrap: anywhere;
+            font-size: 14px;
+        }
+
+        .credential strong {
+            color: #334155;
+        }
+
+        .forgot {
+            text-align: right;
+            margin-top: 12px;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #64748b;
+        }
+
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 14px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 18px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">SpendWise AI</div>
+
+    <h1>Welcome Back!</h1>
+
+    <p class="subtitle">
+        Sign in to manage your expenses and savings.
+    </p>
+
+    <form id="loginForm">
+
+        <label for="email">Email Address</label>
+
+        <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                autocomplete="username"
+                required
+        >
+
+        <label for="password">Password</label>
+
+        <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+        >
+
+        <div class="forgot">
+            <a href="/forgot-password.html">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-btn" id="loginButton">
+            Login
+        </button>
+
+    </form>
+
+    <div class="divider">OR</div>
+
+    <div class="guest-box">
+
+        <h3>Try SpendWise as a Guest</h3>
+
+        <p>
+            Explore the application using our demo account.
+            No separate registration is required.
+        </p>
+
+        <div class="credential">
+            <strong>Guest Email:</strong>
+            <span>demo@spendwise.com</span>
+        </div>
+
+        <div class="credential">
+            <strong>Guest Password:</strong>
+            <span>Demo@123</span>
+        </div>
+
+        <button
+                type="button"
+                class="guest-btn"
+                id="guestButton"
+        >
+            Continue as Guest
+        </button>
+
+    </div>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <div class="footer">
+        Don't have an account?
+        <a href="/register.html">Create Account</a>
+    </div>
+
+</div>
+
+<script>
+    "use strict";
+
+    const API_BASE_URL = "/api/auth";
+
+    const message = document.getElementById("message");
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const guestButton = document.getElementById("guestButton");
+
+    function showMessage(text, success = false) {
+        message.textContent = text;
+        message.style.color = success ? "#15803d" : "#b91c1c";
+    }
+
+    async function readResponse(response) {
+        const text = await response.text();
+
+        let data = {};
+
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch {
+            data = {};
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || `Request failed: HTTP ${response.status}`
+            );
+        }
+
+        return data;
+    }
+
+    /*
+     * Save the JWT returned by the backend.
+     */
+    function saveAuthentication(data) {
+        if (!data || !data.token) {
+            throw new Error(
+                "Login succeeded, but the server did not return a JWT."
+            );
+        }
+
+        if (data.tokenType && data.tokenType !== "Bearer") {
+            throw new Error("Unsupported authentication token type.");
+        }
+
+        sessionStorage.setItem("spendwiseJwt", data.token);
+
+        if (data.user) {
+            sessionStorage.setItem(
+                "spendwiseUser",
+                JSON.stringify(data.user)
+            );
+        } else {
+            sessionStorage.removeItem("spendwiseUser");
+        }
+    }
+
+    /*
+     * Regular login.
+     */
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        loginButton.disabled = true;
+        guestButton.disabled = true;
+
+        showMessage("Signing in...", true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    email: document.getElementById("email").value.trim(),
+                    password: document.getElementById("password").value
+                })
+            });
+
+            const data = await readResponse(response);
+
+            saveAuthentication(data);
+
+            showMessage("Login successful. Redirecting...", true);
+
+            window.location.replace("/index.html");
+
+        } catch (error) {
+            console.error("Login error:", error);
+
+            showMessage(error.message || "Unable to log in.");
+
+        } finally {
+            loginButton.disabled = false;
+            guestButton.disabled = false;
+        }
+    });
+
+    /*
+     * Guest login.
+     */
+    guestButton.addEventListener("click", async function () {
+        guestButton.disabled = true;
+        loginButton.disabled = true;
+
+        showMessage("Signing in as guest...", true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/guest`, {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            const data = await readResponse(response);
+
+            saveAuthentication(data);
+
+            showMessage(
+                "Guest login successful. Redirecting...",
+                true
+            );
+
+            window.location.replace("/index.html");
+
+        } catch (error) {
+            console.error("Guest login error:", error);
+
+            showMessage(
+                error.message || "Unable to log in as guest."
+            );
+
+        } finally {
+            guestButton.disabled = false;
+            loginButton.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
+

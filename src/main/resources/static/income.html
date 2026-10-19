@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpendWise AI | Income</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* ================= INCOME PAGE DESIGN ================= */
+
+        .income-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .income-hero h1 {
+            margin: 8px 0;
+            font-size: clamp(28px, 3vw, 36px);
+            font-weight: 850;
+            letter-spacing: -1px;
+        }
+
+        .income-hero p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .income-hero-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 78px;
+            height: 78px;
+            color: var(--secondary);
+            background: var(--secondary-light);
+            border-radius: 24px;
+            font-size: 35px;
+        }
+
+        .income-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .income-stat {
+            padding: 23px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .income-stat:nth-child(1) {
+            border-top: 4px solid var(--secondary);
+        }
+
+        .income-stat:nth-child(2) {
+            border-top: 4px solid var(--primary);
+        }
+
+        .income-stat:nth-child(3) {
+            border-top: 4px solid var(--info);
+        }
+
+        .income-stat-label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .income-stat-value {
+            display: block;
+            color: var(--text-primary);
+            font-size: clamp(20px, 2.3vw, 28px);
+            font-weight: 850;
+            letter-spacing: -0.8px;
+            overflow-wrap: anywhere;
+        }
+
+        .income-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.85fr);
+            align-items: start;
+            gap: 24px;
+        }
+
+        .income-panel {
+            min-width: 0;
+            padding: 25px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .income-panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .income-panel-heading h2 {
+            margin: 5px 0 0;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .income-panel-heading p {
+            margin: 5px 0 0;
+            font-size: 12px;
+        }
+
+        .income-panel-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            color: var(--secondary);
+            background: var(--secondary-light);
+            border-radius: 13px;
+            font-size: 22px;
+        }
+
+        .income-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .income-filter-grid .form-group {
+            min-width: 0;
+            margin-bottom: 0;
+        }
+
+        .income-filter-grid label {
+            font-size: 12px;
+        }
+
+        .income-filter-grid select {
+            min-width: 0;
+            padding: 10px;
+        }
+
+        .income-filter-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .income-filter-actions button {
+            min-height: 40px;
+        }
+
+        .income-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 16px;
+        }
+
+        .income-form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .income-form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .income-cancel-btn {
+            color: var(--text-secondary);
+            background: #f1f0f7;
+        }
+
+        .income-cancel-btn:hover {
+            color: var(--text-primary);
+            background: #e7e5f1;
+            box-shadow: none;
+        }
+
+        .income-category-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            color: #087b57;
+            background: var(--secondary-light);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 750;
+        }
+
+        .income-amount {
+            color: #087b57;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .income-date {
+            white-space: nowrap;
+        }
+
+        .income-actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .income-actions button {
+            min-height: 34px;
+            padding: 7px 10px;
+            font-size: 11px;
+        }
+
+        .income-empty {
+            padding: 34px 18px;
+            text-align: center;
+        }
+
+        .income-empty-icon {
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .income-empty h3 {
+            margin: 0 0 7px;
+            font-size: 16px;
+        }
+
+        .income-empty p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .income-message {
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1000px) {
+            .income-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .income-hero {
+                align-items: flex-start;
+            }
+
+            .income-hero-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 17px;
+                font-size: 27px;
+            }
+
+            .income-stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .income-panel {
+                padding: 17px;
+            }
+
+            .income-filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .income-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .income-form-grid .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= NAVIGATION ================= -->
+
+<nav class="navbar">
+    <h1>✦ SpendWise AI</h1>
+
+    <ul>
+        <li><a href="index.html">▦ Dashboard</a></li>
+        <li><a href="expenses.html">↘ Expenses</a></li>
+        <li><a class="active" href="income.html">↗ Income</a></li>
+        <li><a href="budgets.html">◷ Budgets</a></li>
+        <li><a href="savings.html">♧ Savings</a></li>
+        <li><a href="categories.html">▤ Categories</a></li>
+        <li><a href="ai.html">✧ AI Insights</a></li>
+    </ul>
+</nav>
+
+
+<main class="container">
+
+    <!-- ================= PAGE HEADING ================= -->
+
+    <header class="income-hero">
+
+        <div>
+            <span class="eyebrow">EVERY RUPEE COUNTS</span>
+
+            <h1>Income Management</h1>
+
+            <p>
+                Track your earnings, organize income sources,
+                and understand your financial growth.
+            </p>
+        </div>
+
+        <div class="income-hero-icon">↗</div>
+
+    </header>
+
+
+    <!-- ================= MESSAGES ================= -->
+
+    <div id="income-messages"
+         class="income-message"
+         aria-live="polite">
+    </div>
+
+
+    <!-- ================= SUMMARY CARDS ================= -->
+
+    <section class="income-stats">
+
+        <article class="income-stat">
+
+                <span class="income-stat-label">
+                    Total income
+                </span>
+
+            <strong class="income-stat-value"
+                    id="total-income">
+                ₹0.00
+            </strong>
+
+        </article>
+
+
+        <article class="income-stat">
+
+                <span class="income-stat-label">
+                    Transactions
+                </span>
+
+            <strong class="income-stat-value"
+                    id="income-count">
+                0
+            </strong>
+
+        </article>
+
+
+        <article class="income-stat">
+
+                <span class="income-stat-label">
+                    Average income
+                </span>
+
+            <strong class="income-stat-value"
+                    id="average-income">
+                ₹0.00
+            </strong>
+
+        </article>
+
+    </section>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <section class="income-layout">
+
+
+        <!-- ================= INCOME HISTORY ================= -->
+
+        <article class="income-panel">
+
+            <div class="income-panel-heading">
+
+                <div>
+                    <span class="eyebrow">YOUR EARNINGS</span>
+
+                    <h2>Income History</h2>
+
+                    <p>
+                        Review your income transactions.
+                    </p>
+                </div>
+
+                <div class="income-panel-icon">▤</div>
+
+            </div>
+
+
+            <!-- Filters -->
+
+            <div class="income-filter-grid">
+
+                <div class="form-group">
+
+                    <label for="month-select">
+                        Month
+                    </label>
+
+                    <select id="month-select">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="year-select">
+                        Year
+                    </label>
+
+                    <select id="year-select"></select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="category-filter">
+                        Category
+                    </label>
+
+                    <select id="category-filter">
+                        <option value="">All Categories</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="income-filter-actions">
+
+                <button type="button"
+                        onclick="loadIncome()">
+                    Apply Filters ↗
+                </button>
+
+                <button type="button"
+                        class="secondary-btn"
+                        onclick="clearFilters()">
+                    Clear Filters
+                </button>
+
+            </div>
+
+
+            <!-- Table -->
+
+            <div class="table-container">
+
+                <table id="income-table">
+
+                    <thead>
+                    <tr>
+                        <th>Amount</th>
+                        <th>Source</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td colspan="6">
+                            Loading income...
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </article>
+
+
+        <!-- ================= ADD / EDIT INCOME ================= -->
+
+        <article class="income-panel"
+                 id="income-form-panel">
+
+            <div class="income-panel-heading">
+
+                <div>
+                    <span class="eyebrow">RECORD YOUR EARNINGS</span>
+
+                    <h2 id="form-title">
+                        Add Income
+                    </h2>
+
+                    <p>
+                        Enter the details of your earnings.
+                    </p>
+                </div>
+
+                <div class="income-panel-icon">＋</div>
+
+            </div>
+
+
+            <form id="add-income-form">
+
+                <input type="hidden" id="income-id">
+
+
+                <div class="income-form-grid">
+
+                    <div class="form-group full-width">
+
+                        <label for="amount">
+                            Amount (₹)
+                        </label>
+
+                        <input
+                                type="number"
+                                id="amount"
+                                min="0.01"
+                                step="0.01"
+                                placeholder="e.g. 25000.00"
+                                required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="source">
+                            Income source
+                        </label>
+
+                        <input
+                                type="text"
+                                id="source"
+                                maxlength="255"
+                                placeholder="e.g. Salary"
+                                required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <input
+                                type="text"
+                                id="description"
+                                maxlength="255"
+                                placeholder="e.g. October salary"
+                                required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="date">
+                            Date received
+                        </label>
+
+                        <input
+                                type="date"
+                                id="date"
+                                required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="category">
+                            Income category
+                        </label>
+
+                        <select id="category" required>
+                            <option value="">
+                                Select income category
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="income-form-actions">
+
+                    <button type="submit"
+                            id="submit-btn">
+                        ＋ Add Income
+                    </button>
+
+                    <button type="button"
+                            id="cancel-btn"
+                            class="income-cancel-btn"
+                            onclick="resetForm()"
+                            hidden>
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </article>
+
+    </section>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+<script src="/auth-session.js"></script>
+<script>
+
+    /* =========================================
+       CURRENCY FORMAT
+       ========================================= */
+
+    function money(value) {
+
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(Number(value) || 0);
+
+    }
+
+
+    /* =========================================
+       PAGE STATE
+       ========================================= */
+
+    let allIncomes = [];
+    let allCategories = [];
+
+
+    /* =========================================
+       API HELPER
+       ========================================= */
+
+    async function requestJson(url, options = {}) {
+
+        const response = await fetch(url, {
+            credentials: 'same-origin',
+            ...options
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Request failed with status ${response.status}`
+            );
+        }
+
+        if (response.status === 204) {
+            return null;
+        }
+
+        const text = await response.text();
+
+        return text ? JSON.parse(text) : null;
+
+    }
+
+
+    /* =========================================
+       MESSAGES
+       ========================================= */
+
+    function showMessage(text, type = 'info') {
+
+        const container =
+            document.getElementById('income-messages');
+
+        container.replaceChildren();
+
+        const message = document.createElement('div');
+
+        message.className = `message ${type}`;
+        message.textContent = text;
+
+        container.appendChild(message);
+
+        window.setTimeout(() => {
+
+            if (message.parentNode === container) {
+                message.remove();
+            }
+
+        }, 5000);
+
+    }
+
+
+    /* =========================================
+       LOAD INCOME
+       ========================================= */
+
+    async function loadIncome() {
+
+        const month =
+            document.getElementById('month-select').value;
+
+        const year =
+            document.getElementById('year-select').value;
+
+
+        try {
+
+            const data = await requestJson(
+                `/income/by-month?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`
+            );
+
+            allIncomes = Array.isArray(data) ? data : [];
+
+            filterAndRender();
+
+        } catch (error) {
+
+            console.error('Error loading income:', error);
+
+            allIncomes = [];
+
+            filterAndRender();
+
+            showMessage(
+                'Could not load income. Check your login session and backend.',
+                'error'
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       LOAD CATEGORIES
+       ========================================= */
+
+    async function loadCategories() {
+
+        const categorySelect =
+            document.getElementById('category');
+
+        const filterSelect =
+            document.getElementById('category-filter');
+
+
+        try {
+
+            const data = await requestJson('/categories');
+
+            allCategories = Array.isArray(data) ? data : [];
+
+
+            const incomeCategories = allCategories.filter(
+                category => category.type === 'INCOME'
+            );
+
+
+            categorySelect.replaceChildren();
+
+            const placeholder = document.createElement('option');
+
+            placeholder.value = '';
+            placeholder.textContent = 'Select income category';
+
+            categorySelect.appendChild(placeholder);
+
+
+            filterSelect.replaceChildren();
+
+            const allOption = document.createElement('option');
+
+            allOption.value = '';
+            allOption.textContent = 'All Categories';
+
+            filterSelect.appendChild(allOption);
+
+
+            incomeCategories.forEach(category => {
+
+                const option = document.createElement('option');
+
+                option.value = category.id;
+                option.textContent = category.name;
+
+                categorySelect.appendChild(option);
+
+
+                const filterOption =
+                    document.createElement('option');
+
+                filterOption.value = category.id;
+                filterOption.textContent = category.name;
+
+                filterSelect.appendChild(filterOption);
+
+            });
+
+
+            if (incomeCategories.length === 0) {
+
+                showMessage(
+                    'No income categories found. Create an income category first.',
+                    'info'
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error('Error loading categories:', error);
+
+            showMessage(
+                'Could not load categories. Please check the backend.',
+                'error'
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       ADD OR UPDATE INCOME
+       ========================================= */
+
+    async function addIncome(event) {
+
+        event.preventDefault();
+
+
+        const id =
+            document.getElementById('income-id').value;
+
+        const amount =
+            Number(document.getElementById('amount').value);
+
+        const source =
+            document.getElementById('source').value.trim();
+
+        const description =
+            document.getElementById('description').value.trim();
+
+        const date =
+            document.getElementById('date').value;
+
+        const categoryId =
+            document.getElementById('category').value;
+
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+
+            showMessage(
+                'Enter an income amount greater than zero.',
+                'error'
+            );
+
+            return;
+
+        }
+
+
+        if (!categoryId) {
+
+            showMessage(
+                'Please select an income category.',
+                'error'
+            );
+
+            return;
+
+        }
+
+
+        const income = {
+
+            amount: amount,
+
+            source: source,
+
+            description: description,
+
+            date: date,
+
+            /*
+             * Preserved from your original implementation.
+             * If your backend supports session-based ownership,
+             * it should resolve the authenticated user itself.
+             */
+            user: { id: 1 },
+
+            category: {
+                id: Number(categoryId)
+            }
+
+        };
+
+
+        const method = id ? 'PUT' : 'POST';
+
+        const url = id
+            ? `/income/${encodeURIComponent(id)}`
+            : '/income';
+
+
+        const successMessage = id
+            ? 'Income updated successfully.'
+            : 'Income added successfully.';
+
+
+        const submitButton =
+            document.getElementById('submit-btn');
+
+        submitButton.disabled = true;
+
+        submitButton.textContent =
+            id ? 'Updating...' : 'Adding...';
+
+
+        try {
+
+            await requestJson(url, {
+
+                method: method,
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(income)
+
+            });
+
+
+            showMessage(successMessage, 'success');
+
+            resetForm();
+
+            await loadIncome();
+
+        } catch (error) {
+
+            console.error('Error saving income:', error);
+
+            showMessage(
+                `Could not ${id ? 'update' : 'add'} income. Please try again.`,
+                'error'
+            );
+
+        } finally {
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                document.getElementById('income-id').value
+                    ? '✓ Update Income'
+                    : '＋ Add Income';
+
+        }
+
+    }
+
+
+    /* =========================================
+       DELETE INCOME
+       ========================================= */
+
+    async function deleteIncome(id) {
+
+        const confirmed = window.confirm(
+            'Are you sure you want to delete this income transaction?'
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            await requestJson(
+                `/income/${encodeURIComponent(id)}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+
+            showMessage(
+                'Income deleted successfully.',
+                'success'
+            );
+
+            await loadIncome();
+
+        } catch (error) {
+
+            console.error('Error deleting income:', error);
+
+            showMessage(
+                'Could not delete income. Please try again.',
+                'error'
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       RESET FORM
+       ========================================= */
+
+    function resetForm() {
+
+        document.getElementById('add-income-form').reset();
+
+        document.getElementById('income-id').value = '';
+
+        document.getElementById('form-title').textContent =
+            'Add Income';
+
+        document.getElementById('submit-btn').textContent =
+            '＋ Add Income';
+
+        document.getElementById('cancel-btn').hidden = true;
+
+        document.getElementById('date').value =
+            new Date().toISOString().slice(0, 10);
+
+    }
+
+
+    /* =========================================
+       EDIT INCOME
+       ========================================= */
+
+    function editIncome(
+        id,
+        amount,
+        source,
+        description,
+        date,
+        categoryId
+    ) {
+
+        document.getElementById('income-id').value = id;
+
+        document.getElementById('amount').value = amount;
+
+        document.getElementById('source').value = source || '';
+
+        document.getElementById('description').value =
+            description || '';
+
+        document.getElementById('date').value = date || '';
+
+        document.getElementById('category').value =
+            categoryId || '';
+
+
+        document.getElementById('form-title').textContent =
+            'Edit Income';
+
+        document.getElementById('submit-btn').textContent =
+            '✓ Update Income';
+
+        document.getElementById('cancel-btn').hidden = false;
+
+
+        document.getElementById(
+            'income-form-panel'
+        ).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+    }
+
+
+    /* =========================================
+       FILTER AND RENDER
+       ========================================= */
+
+    function filterAndRender() {
+
+        const categoryId =
+            document.getElementById('category-filter').value;
+
+
+        const filteredIncomes = categoryId
+
+            ? allIncomes.filter(
+                income =>
+                    income.category &&
+                    String(income.category.id) === String(categoryId)
+            )
+
+            : allIncomes;
+
+
+        const tbody = document.querySelector(
+            '#income-table tbody'
+        );
+
+        tbody.replaceChildren();
+
+
+        /* Update summary cards */
+
+        const total = filteredIncomes.reduce(
+            (sum, income) =>
+                sum + (Number(income.amount) || 0),
+            0
+        );
+
+        const count = filteredIncomes.length;
+
+        const average = count > 0 ? total / count : 0;
+
+
+        document.getElementById('total-income').textContent =
+            money(total);
+
+        document.getElementById('income-count').textContent =
+            String(count);
+
+        document.getElementById('average-income').textContent =
+            money(average);
+
+
+        /* Empty state */
+
+        if (count === 0) {
+
+            const row = document.createElement('tr');
+
+            const cell = document.createElement('td');
+
+            cell.colSpan = 6;
+
+
+            const empty = document.createElement('div');
+
+            empty.className = 'income-empty';
+
+
+            const icon = document.createElement('div');
+
+            icon.className = 'income-empty-icon';
+            icon.textContent = '💰';
+
+
+            const heading = document.createElement('h3');
+
+            heading.textContent = 'No income found';
+
+
+            const paragraph = document.createElement('p');
+
+            paragraph.textContent =
+                'Try another filter or record your first income transaction.';
+
+
+            empty.append(icon, heading, paragraph);
+
+            cell.appendChild(empty);
+
+            row.appendChild(cell);
+
+            tbody.appendChild(row);
+
+            return;
+
+        }
+
+
+        /* Sort by date, newest first */
+
+        const sortedIncomes = [...filteredIncomes].sort(
+            (a, b) =>
+                String(b.date || '').localeCompare(
+                    String(a.date || '')
+                )
+        );
+
+
+        sortedIncomes.forEach(income => {
+
+            const row = document.createElement('tr');
+
+
+            /* Amount */
+
+            const amountCell = row.insertCell();
+
+            amountCell.className = 'income-amount';
+
+            amountCell.textContent = money(income.amount);
+
+
+            /* Source */
+
+            const sourceCell = row.insertCell();
+
+            sourceCell.textContent = income.source || '—';
+
+
+            /* Description */
+
+            const descriptionCell = row.insertCell();
+
+            descriptionCell.textContent =
+                income.description || '—';
+
+
+            /* Date */
+
+            const dateCell = row.insertCell();
+
+            dateCell.className = 'income-date';
+
+            dateCell.textContent = income.date || '—';
+
+
+            /* Category */
+
+            const categoryCell = row.insertCell();
+
+            const badge = document.createElement('span');
+
+            badge.className = 'income-category-badge';
+
+            badge.textContent =
+                income.category && income.category.name
+                    ? income.category.name
+                    : 'Uncategorized';
+
+            categoryCell.appendChild(badge);
+
+
+            /* Actions */
+
+            const actionsCell = row.insertCell();
+
+            const actions = document.createElement('div');
+
+            actions.className = 'income-actions';
+
+
+            const editButton = document.createElement('button');
+
+            editButton.type = 'button';
+
+            editButton.className = 'secondary-btn';
+
+            editButton.textContent = 'Edit';
+
+
+            editButton.addEventListener('click', () => {
+
+                editIncome(
+                    income.id,
+                    income.amount,
+                    income.source || '',
+                    income.description || '',
+                    income.date || '',
+                    income.category
+                        ? income.category.id
+                        : ''
+                );
+
+            });
+
+
+            const deleteButton =
+                document.createElement('button');
+
+            deleteButton.type = 'button';
+
+            deleteButton.className = 'delete-btn';
+
+            deleteButton.textContent = 'Delete';
+
+
+            deleteButton.addEventListener('click', () => {
+                deleteIncome(income.id);
+            });
+
+
+            actions.append(editButton, deleteButton);
+
+            actionsCell.appendChild(actions);
+
+            tbody.appendChild(row);
+
+        });
+
+    }
+
+
+    /* =========================================
+       CLEAR FILTERS
+       ========================================= */
+
+    function clearFilters() {
+
+        const now = new Date();
+
+        document.getElementById('month-select').value =
+            String(now.getMonth() + 1);
+
+        document.getElementById('year-select').value =
+            String(now.getFullYear());
+
+        document.getElementById('category-filter').value = '';
+
+        loadIncome();
+
+    }
+
+
+    /* =========================================
+       INITIALIZE PAGE
+       ========================================= */
+
+    window.addEventListener('DOMContentLoaded', async () => {
+
+        const now = new Date();
+
+
+        document.getElementById('month-select').value =
+            String(now.getMonth() + 1);
+
+
+        const yearSelect =
+            document.getElementById('year-select');
+
+
+        for (
+            let year = now.getFullYear() + 1;
+            year >= now.getFullYear() - 5;
+            year--
+        ) {
+
+            const option = document.createElement('option');
+
+            option.value = String(year);
+
+            option.textContent = String(year);
+
+            yearSelect.appendChild(option);
+
+        }
+
+
+        yearSelect.value = String(now.getFullYear());
+
+
+        document.getElementById('date').value =
+            now.toISOString().slice(0, 10);
+
+
+        document.getElementById('add-income-form')
+            .addEventListener('submit', addIncome);
+
+
+        document.getElementById('category-filter')
+            .addEventListener('change', filterAndRender);
+
+
+        await loadCategories();
+
+        await loadIncome();
+
+    });
+
+</script>
+
+
+
+</body>
+</html>

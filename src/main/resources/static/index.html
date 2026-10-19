@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpendWise AI | Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Chart.js for interactive dashboard charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- ================= NAVIGATION ================= -->
+
+<nav class="navbar">
+    <h1>✦ SpendWise AI</h1>
+
+    <ul>
+        <li><a class="active" href="index.html">▦ Dashboard</a></li>
+        <li><a href="expenses.html">↘ Expenses</a></li>
+        <li><a href="income.html">↗ Income</a></li>
+        <li><a href="budgets.html">◷ Budgets</a></li>
+        <li><a href="savings.html">♧ Savings</a></li>
+        <li><a href="categories.html">▤ Categories</a></li>
+        <li><a href="ai.html">✧ AI Insights</a></li>
+    </ul>
+</nav>
+
+
+<!-- ================= MAIN DASHBOARD ================= -->
+
+<main class="container">
+
+    <!-- Dashboard heading -->
+
+    <header class="dashboard-heading">
+        <div>
+            <span class="eyebrow">YOUR FINANCIAL OVERVIEW</span>
+
+            <h1>Dashboard Overview</h1>
+
+            <p>
+                Track your money, understand your spending,
+                and make smarter financial decisions.
+            </p>
+        </div>
+
+        <div class="currency-label">
+            🇮🇳 Indian Rupee (INR)
+        </div>
+    </header>
+
+
+    <!-- Error message -->
+
+    <div id="dashboard-error"
+         class="message error"
+         style="display:none;">
+    </div>
+
+
+    <!-- ================= FILTERS ================= -->
+
+    <section class="filter-section dashboard-filters">
+
+        <div class="form-group">
+            <label for="month-select">Select month</label>
+
+            <select id="month-select">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="year-select">Select year</label>
+
+            <select id="year-select"></select>
+        </div>
+
+
+        <button type="button"
+                id="apply-filter-btn"
+                onclick="loadSummary()">
+            Apply Filters ↗
+        </button>
+
+    </section>
+
+
+    <!-- ================= SUMMARY CARDS ================= -->
+
+    <section class="summary-cards">
+
+        <article class="summary-card expense-summary">
+
+            <div class="summary-card-top">
+                <span class="summary-icon">↘</span>
+                <span class="summary-label">Monthly expenses</span>
+            </div>
+
+            <h3 id="total-expenses">₹0.00</h3>
+
+            <p>Money spent this month</p>
+
+        </article>
+
+
+        <article class="summary-card income-summary">
+
+            <div class="summary-card-top">
+                <span class="summary-icon">↗</span>
+                <span class="summary-label">Monthly income</span>
+            </div>
+
+            <h3 id="total-income">₹0.00</h3>
+
+            <p>Money received this month</p>
+
+        </article>
+
+
+        <article class="summary-card savings-summary">
+
+            <div class="summary-card-top">
+                <span class="summary-icon">♧</span>
+                <span class="summary-label">Savings goals</span>
+            </div>
+
+            <h3 id="total-savings">₹0.00</h3>
+
+            <p>Total target amount</p>
+
+        </article>
+
+    </section>
+
+
+    <!-- ================= CHARTS ================= -->
+
+    <section class="dashboard-grid">
+
+        <!-- Cash Flow Chart -->
+
+        <article class="card dashboard-chart-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <span class="eyebrow">INCOME VS EXPENSES</span>
+                    <h2>Cash Flow</h2>
+                </div>
+
+                <span class="chart-tag">Monthly</span>
+
+            </div>
+
+            <div class="chart-wrap">
+                <canvas id="cashflow-chart"
+                        aria-label="Monthly income, expenses and balance chart">
+                </canvas>
+            </div>
+
+            <p class="chart-note">
+                Compare your income, spending, and net balance.
+            </p>
+
+        </article>
+
+
+        <!-- Category Spending Chart -->
+
+        <article class="card dashboard-chart-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <span class="eyebrow">WHERE YOUR MONEY GOES</span>
+                    <h2>Spending by Category</h2>
+                </div>
+
+                <span class="chart-tag">Breakdown</span>
+
+            </div>
+
+            <div class="chart-wrap donut">
+                <canvas id="category-chart"
+                        aria-label="Expenses by category doughnut chart">
+                </canvas>
+            </div>
+
+            <p class="chart-note" id="category-chart-note">
+                Your spending breakdown will appear here.
+            </p>
+
+        </article>
+
+
+        <!-- Budget Overview -->
+
+        <article class="card dashboard-chart-card wide">
+
+            <div class="card-heading">
+
+                <div>
+                    <span class="eyebrow">KEEP YOUR SPENDING UNDER CONTROL</span>
+                    <h2>Budget Overview</h2>
+                </div>
+
+                <a class="text-link" href="budgets.html">
+                    Manage budgets →
+                </a>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table id="budget-overview-table">
+
+                    <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Spent</th>
+                        <th>Budget limit</th>
+                        <th>Remaining</th>
+                        <th>Usage</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td colspan="6">
+                            Loading budget information...
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- ================= QUICK ACTIONS ================= -->
+
+    <section class="quick-actions-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">MANAGE YOUR MONEY</span>
+                <h2>Quick Actions</h2>
+            </div>
+        </div>
+
+
+        <div class="quick-actions-grid">
+
+            <a href="expenses.html" class="quick-action-card">
+                <span class="quick-action-icon expense-icon">↘</span>
+
+                <div>
+                    <h3>Add Expense</h3>
+                    <p>Record a purchase or payment.</p>
+                </div>
+
+                <span class="quick-action-arrow">→</span>
+            </a>
+
+
+            <a href="income.html" class="quick-action-card">
+                <span class="quick-action-icon income-icon">↗</span>
+
+                <div>
+                    <h3>Add Income</h3>
+                    <p>Record your earnings.</p>
+                </div>
+
+                <span class="quick-action-arrow">→</span>
+            </a>
+
+
+            <a href="budgets.html" class="quick-action-card">
+                <span class="quick-action-icon budget-icon">◷</span>
+
+                <div>
+                    <h3>Manage Budgets</h3>
+                    <p>Set limits for your spending.</p>
+                </div>
+
+                <span class="quick-action-arrow">→</span>
+            </a>
+
+
+            <a href="ai.html" class="quick-action-card">
+                <span class="quick-action-icon ai-icon">✧</span>
+
+                <div>
+                    <h3>AI Insights</h3>
+                    <p>Get personalized financial advice.</p>
+                </div>
+
+                <span class="quick-action-arrow">→</span>
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ================= DASHBOARD JAVASCRIPT ================= -->
+<script src="/auth-session.js"></script>
+<script>
+
+    /*
+     * Format all financial values in Indian rupees.
+     *
+     * Example:
+     * 12500 -> ₹12,500.00
+     */
+
+    const money = value => new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(Number(value) || 0);
+
+
+    let cashflowChart = null;
+    let categoryChart = null;
+
+
+    /*
+     * Fetch JSON from the existing backend.
+     *
+     * Existing session cookies are included automatically
+     * because the requests use the same origin.
+     */
+
+    async function fetchJson(url) {
+
+        const response = await fetch(url, {
+            credentials: 'same-origin'
+        });
+
+        if (response.status === 404) {
+            return null;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                `Request failed with status ${response.status}: ${url}`
+            );
+        }
+
+        return response.json();
+    }
+
+
+    /*
+     * Display dashboard errors without breaking the page.
+     */
+
+    function showDashboardError(message) {
+
+        const box = document.getElementById('dashboard-error');
+
+        box.textContent = message;
+        box.style.display = 'block';
+    }
+
+
+    /*
+     * Load summary cards and charts.
+     */
+
+    async function loadSummary() {
+
+        const month = document.getElementById('month-select').value;
+        const year = document.getElementById('year-select').value;
+
+        const button = document.getElementById('apply-filter-btn');
+        const errorBox = document.getElementById('dashboard-error');
+
+        button.disabled = true;
+        button.textContent = 'Loading...';
+
+        errorBox.textContent = '';
+        errorBox.style.display = 'none';
+
+        try {
+
+            const [
+                expensesData,
+                incomesData,
+                savingsData
+            ] = await Promise.all([
+
+                fetchJson(
+                    `/expenses/by-month?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`
+                ),
+
+                fetchJson(
+                    `/income/by-month?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`
+                ),
+
+                fetchJson('/savings')
+
+            ]);
+
+
+            const expenses = Array.isArray(expensesData)
+                ? expensesData
+                : [];
+
+            const incomes = Array.isArray(incomesData)
+                ? incomesData
+                : [];
+
+            const savings = Array.isArray(savingsData)
+                ? savingsData
+                : [];
+
+
+            /*
+             * Calculate totals from the backend responses.
+             */
+
+            const totalExpenses = expenses.reduce(
+                (sum, item) => sum + (Number(item.amount) || 0),
+                0
+            );
+
+            const totalIncome = incomes.reduce(
+                (sum, item) => sum + (Number(item.amount) || 0),
+                0
+            );
+
+            const totalSavings = savings.reduce(
+                (sum, item) => sum + (Number(item.targetAmount) || 0),
+                0
+            );
+
+
+            /*
+             * Update financial summary cards.
+             */
+
+            document.getElementById('total-expenses').textContent =
+                money(totalExpenses);
+
+            document.getElementById('total-income').textContent =
+                money(totalIncome);
+
+            document.getElementById('total-savings').textContent =
+                money(totalSavings);
+
+
+            /*
+             * Update charts and budget overview.
+             */
+
+            renderCashflowChart(totalIncome, totalExpenses);
+
+            await Promise.all([
+                loadBudgetOverview(month, year),
+                loadCategoryChart(month, year)
+            ]);
+
+        } catch (error) {
+
+            console.error('Dashboard loading error:', error);
+
+            showDashboardError(
+                'Could not load dashboard data. Please check that you are logged in and the backend is running, then refresh the page.'
+            );
+
+        } finally {
+
+            button.disabled = false;
+            button.textContent = 'Apply Filters ↗';
+
+        }
+    }
+
+
+    /*
+     * Cash Flow Chart
+     *
+     * Shows:
+     * 1. Income
+     * 2. Expenses
+     * 3. Net balance
+     */
+
+    function renderCashflowChart(income, expenses) {
+
+        const canvas = document.getElementById('cashflow-chart');
+
+        if (cashflowChart) {
+            cashflowChart.destroy();
+        }
+
+        cashflowChart = new Chart(canvas, {
+
+            type: 'bar',
+
+            data: {
+
+                labels: [
+                    'Income',
+                    'Expenses',
+                    'Net Balance'
+                ],
+
+                datasets: [{
+
+                    label: 'Amount',
+
+                    data: [
+                        income,
+                        expenses,
+                        income - expenses
+                    ],
+
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.82)',
+                        'rgba(239, 68, 68, 0.78)',
+                        'rgba(108, 76, 241, 0.82)'
+                    ],
+
+                    borderRadius: 9,
+                    borderSkipped: false,
+                    maxBarThickness: 58
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function(context) {
+                                return money(context.raw);
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        grid: {
+                            display: false
+                        },
+
+                        ticks: {
+                            color: '#85869a'
+                        },
+
+                        border: {
+                            display: false
+                        }
+
+                    },
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            color: '#85869a',
+
+                            callback: function(value) {
+                                return '₹' +
+                                    Number(value).toLocaleString('en-IN');
+                            }
+
+                        },
+
+                        grid: {
+                            color: '#f0eff7'
+                        },
+
+                        border: {
+                            display: false
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Spending by Category Chart
+     *
+     * Uses the category-wise expense endpoint.
+     */
+
+    async function loadCategoryChart(month, year) {
+
+        let responseData = await fetchJson(
+            `/expenses/by-category?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`
+        );
+
+
+        if (
+            !responseData ||
+            typeof responseData !== 'object' ||
+            Array.isArray(responseData)
+        ) {
+            responseData = {};
+        }
+
+
+        const entries = Object.entries(responseData)
+
+            .map(([name, value]) => [
+                name,
+                Number(value) || 0
+            ])
+
+            .filter(([, value]) => value > 0)
+
+            .sort((a, b) => b[1] - a[1]);
+
+
+        const labels = entries.map(([name]) => name);
+
+        const values = entries.map(([, value]) => value);
+
+
+        const palette = [
+            '#7867f5',
+            '#14b889',
+            '#ffad5c',
+            '#ef6b86',
+            '#55a6e8',
+            '#a58be8',
+            '#edcf5b',
+            '#65c7c0'
+        ];
+
+
+        if (categoryChart) {
+            categoryChart.destroy();
+        }
+
+
+        categoryChart = new Chart(
+            document.getElementById('category-chart'),
+            {
+
+                type: 'doughnut',
+
+                data: {
+
+                    labels: labels.length
+                        ? labels
+                        : ['No expenses yet'],
+
+                    datasets: [{
+
+                        data: values.length
+                            ? values
+                            : [1],
+
+                        backgroundColor: labels.length
+                            ? labels.map(
+                                (_, index) =>
+                                    palette[index % palette.length]
+                            )
+                            : ['#eeedf5'],
+
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverOffset: 7
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    cutout: '70%',
+
+                    plugins: {
+
+                        legend: {
+
+                            position: 'bottom',
+
+                            labels: {
+
+                                color: '#77788d',
+                                padding: 14,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                boxWidth: 8
+
+                            }
+
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label: function(context) {
+
+                                    if (!labels.length) {
+                                        return 'No expenses recorded';
+                                    }
+
+                                    return `${context.label}: ${money(context.raw)}`;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        const total = values.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+
+
+        document.getElementById('category-chart-note').textContent =
+            entries.length
+                ? `${entries.length} spending ${entries.length === 1 ? 'category' : 'categories'} · Total ${money(total)}`
+                : 'No expenses recorded for this month yet.';
+
+    }
+
+
+    /*
+     * Budget Overview
+     *
+     * Combines category-wise spending with saved budgets.
+     */
+
+    async function loadBudgetOverview(month, year) {
+
+        const tbody = document.querySelector(
+            '#budget-overview-table tbody'
+        );
+
+
+        try {
+
+            const [
+                expensesData,
+                budgetsData
+            ] = await Promise.all([
+
+                fetchJson(
+                    `/expenses/by-category?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`
+                ),
+
+                fetchJson('/budgets')
+
+            ]);
+
+
+            const expensesByCategory =
+                expensesData &&
+                typeof expensesData === 'object'
+                    ? expensesData
+                    : {};
+
+
+            const budgets = Array.isArray(budgetsData)
+                ? budgetsData
+                : [];
+
+
+            const budgetsByCategory = {};
+
+
+            budgets.forEach(budget => {
+
+                const categoryName =
+                    budget.category && budget.category.name
+                        ? budget.category.name
+                        : 'Uncategorized';
+
+                budgetsByCategory[categoryName] =
+                    Number(budget.limitAmount) || 0;
+
+            });
+
+
+            const categories = [
+                ...new Set([
+                    ...Object.keys(expensesByCategory),
+                    ...Object.keys(budgetsByCategory)
+                ])
+            ];
+
+
+            tbody.replaceChildren();
+
+
+            if (categories.length === 0) {
+
+                const row = tbody.insertRow();
+
+                const cell = row.insertCell();
+
+                cell.colSpan = 6;
+
+                cell.textContent =
+                    'No budget or expense data available yet. Add an expense or create a budget to get started.';
+
+                return;
+
+            }
+
+
+            categories
+                .sort((a, b) => a.localeCompare(b))
+                .forEach(category => {
+
+                    const spent =
+                        Number(expensesByCategory[category]) || 0;
+
+
+                    const hasBudget =
+                        Object.prototype.hasOwnProperty.call(
+                            budgetsByCategory,
+                            category
+                        );
+
+
+                    const limit = hasBudget
+                        ? budgetsByCategory[category]
+                        : null;
+
+
+                    const remaining = limit !== null
+                        ? limit - spent
+                        : null;
+
+
+                    const percentage = limit > 0
+                        ? Math.min((spent / limit) * 100, 100)
+                        : 0;
+
+
+                    let statusText = 'No budget set';
+                    let statusClass = 'none';
+
+
+                    if (limit !== null && limit > 0) {
+
+                        if (spent >= limit) {
+
+                            statusText = 'Over budget';
+                            statusClass = 'over';
+
+                        } else if (spent >= limit * 0.8) {
+
+                            statusText = 'Near limit';
+                            statusClass = 'near';
+
+                        } else {
+
+                            statusText = 'On track';
+                            statusClass = 'good';
+
+                        }
+
+                    }
+
+
+                    const row = tbody.insertRow();
+
+
+                    [
+                        category,
+                        money(spent),
+                        limit === null ? '—' : money(limit),
+                        remaining === null ? '—' : money(remaining)
+                    ].forEach(value => {
+
+                        const cell = row.insertCell();
+                        cell.textContent = value;
+
+                    });
+
+
+                    /*
+                     * Budget progress.
+                     */
+
+                    const usageCell = row.insertCell();
+
+
+                    if (limit !== null && limit > 0) {
+
+                        const progress = document.createElement('progress');
+
+                        progress.max = 100;
+                        progress.value = percentage;
+
+                        progress.setAttribute(
+                            'aria-label',
+                            `${category} budget used ${Math.round(percentage)} percent`
+                        );
+
+                        usageCell.appendChild(progress);
+
+
+                        const percentageText =
+                            document.createElement('small');
+
+                        percentageText.textContent =
+                            ` ${Math.round((spent / limit) * 100)}%`;
+
+                        usageCell.appendChild(percentageText);
+
+                    } else {
+
+                        usageCell.textContent = '—';
+
+                    }
+
+
+                    /*
+                     * Status badge.
+                     */
+
+                    const statusCell = row.insertCell();
+
+                    const badge = document.createElement('span');
+
+                    badge.className =
+                        `budget-status ${statusClass}`;
+
+                    badge.textContent = statusText;
+
+                    statusCell.appendChild(badge);
+
+                });
+
+
+        } catch (error) {
+
+            console.error('Budget overview error:', error);
+
+            tbody.replaceChildren();
+
+            const row = tbody.insertRow();
+
+            const cell = row.insertCell();
+
+            cell.colSpan = 6;
+
+            cell.textContent =
+                'Budget overview could not be loaded. Please refresh and try again.';
+
+        }
+
+    }
+
+
+    /*
+     * Initialize the dashboard.
+     */
+
+    window.addEventListener('DOMContentLoaded', function() {
+
+        const now = new Date();
+
+        const monthSelect =
+            document.getElementById('month-select');
+
+        const yearSelect =
+            document.getElementById('year-select');
+
+
+        monthSelect.value =
+            String(now.getMonth() + 1);
+
+
+        const currentYear = now.getFullYear();
+
+
+        for (
+            let year = currentYear + 1;
+            year >= currentYear - 4;
+            year--
+        ) {
+
+            const option = document.createElement('option');
+
+            option.value = String(year);
+            option.textContent = String(year);
+
+            yearSelect.appendChild(option);
+
+        }
+
+
+        yearSelect.value = String(currentYear);
+
+
+        loadSummary();
+
+    });
+
+</script>
+
+
+<!-- Existing authentication/session functionality -->
+
+
+</body>
+
+</html>

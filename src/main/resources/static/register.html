@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendWise | Register</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eff6ff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 32px;
+            width: min(440px, 92%);
+            border-radius: 16px;
+            box-shadow: 0 10px 35px #0002;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 12px;
+            background: #2563eb;
+            color: white;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        a { color: #2563eb; }
+        #message { white-space: pre-wrap; color: #b91c1c; }
+    </style>
+</head>
+
+<body>
+<div class="card">
+    <h1>Create your account</h1>
+    <p>Start tracking your finances with SpendWise AI.</p>
+
+    <form id="registerForm">
+        <input
+                type="text"
+                id="name"
+                placeholder="Full name"
+                maxlength="100"
+                required
+        >
+
+        <input
+                type="email"
+                id="email"
+                placeholder="Email address"
+                required
+        >
+
+        <input
+                type="password"
+                id="password"
+                placeholder="Create password"
+                minlength="8"
+                required
+        >
+
+        <small>
+            Use at least 8 characters with uppercase, lowercase,
+            a number and a special character.
+        </small>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p id="message"></p>
+
+    <p>
+        Already registered?
+        <a href="/login.html">Login</a>
+    </p>
+</div>
+<script>
+    const message = document.getElementById("message");
+    const registerForm = document.getElementById("registerForm");
+
+    registerForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        message.style.color = "#2563eb";
+        message.textContent = "Creating account...";
+
+        try {
+            const response = await fetch(
+                "/api/auth/register",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        name: document.getElementById("name").value.trim(),
+                        email: document.getElementById("email").value.trim(),
+                        password: document.getElementById("password").value
+                    })
+                }
+            );
+
+            const responseText = await response.text();
+
+            let data = {};
+
+            try {
+                data = responseText ? JSON.parse(responseText) : {};
+            } catch {
+                data = {};
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || `Registration failed: HTTP ${response.status}`
+                );
+            }
+
+            message.style.color = "#15803d";
+            message.textContent = "Registration successful!";
+
+            setTimeout(() => {
+                window.location.href = "/login.html";
+            }, 1000);
+
+        } catch (error) {
+            console.error("Registration error:", error);
+            message.style.color = "#b91c1c";
+            message.textContent = error.message;
+        }
+    });
+</script>
+
+
+</body>
+</html>

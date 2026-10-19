@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpendWise AI | Budgets</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* ================= BUDGET PAGE ================= */
+
+        .budget-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .budget-hero h1 {
+            margin: 8px 0;
+            font-size: clamp(28px, 3vw, 36px);
+            font-weight: 850;
+            letter-spacing: -1px;
+        }
+
+        .budget-hero p {
+            margin: 0;
+        }
+
+        .budget-hero-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 78px;
+            height: 78px;
+            color: var(--primary);
+            background: var(--primary-light);
+            border-radius: 24px;
+            font-size: 35px;
+        }
+
+        .budget-summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .budget-summary-card {
+            padding: 23px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .budget-summary-card:nth-child(1) {
+            border-top: 4px solid var(--primary);
+        }
+
+        .budget-summary-card:nth-child(2) {
+            border-top: 4px solid var(--danger);
+        }
+
+        .budget-summary-card:nth-child(3) {
+            border-top: 4px solid var(--secondary);
+        }
+
+        .budget-summary-card span {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .budget-summary-card strong {
+            display: block;
+            font-size: clamp(21px, 2.3vw, 29px);
+            font-weight: 850;
+            letter-spacing: -0.8px;
+            overflow-wrap: anywhere;
+        }
+
+        .budget-toolbar {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .budget-toolbar h2 {
+            margin: 5px 0 0;
+            font-size: 23px;
+        }
+
+        .budget-toolbar .form-group {
+            min-width: 160px;
+            margin: 0;
+        }
+
+        .budget-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 340px;
+            align-items: start;
+            gap: 24px;
+        }
+
+        .budget-panel {
+            min-width: 0;
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .budget-panel h2 {
+            margin: 0 0 7px;
+            font-size: 20px;
+        }
+
+        .budget-panel-subtitle {
+            margin: 0 0 22px;
+            font-size: 12px;
+        }
+
+        .budget-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .budget-card {
+            min-width: 0;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .budget-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .budget-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .budget-category-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            color: var(--primary);
+            background: var(--primary-light);
+            border-radius: 13px;
+            font-size: 21px;
+        }
+
+        .budget-category-name {
+            margin: 10px 0 5px;
+            font-size: 16px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .budget-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .budget-status.good {
+            color: #087b57;
+            background: #e0f8ed;
+        }
+
+        .budget-status.near {
+            color: #946000;
+            background: #fff2cf;
+        }
+
+        .budget-status.over {
+            color: #c5324a;
+            background: #ffe5e9;
+        }
+
+        .budget-status.none {
+            color: #66677e;
+            background: #f0eff6;
+        }
+
+        .budget-amounts {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 18px 0 10px;
+        }
+
+        .budget-spent {
+            font-size: 22px;
+            font-weight: 850;
+            letter-spacing: -0.7px;
+            overflow-wrap: anywhere;
+        }
+
+        .budget-limit {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .budget-progress {
+            width: 100%;
+            height: 9px;
+            overflow: hidden;
+            background: #eeedf6;
+            border-radius: 999px;
+        }
+
+        .budget-progress-fill {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #a99bff, #7560f5);
+            border-radius: 999px;
+            transition: width 0.5s ease;
+        }
+
+        .budget-progress-fill.near {
+            background: linear-gradient(90deg, #ffd477, #f3ad45);
+        }
+
+        .budget-progress-fill.over {
+            background: linear-gradient(90deg, #ff9aa8, #ef5b72);
+        }
+
+        .budget-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 13px;
+        }
+
+        .budget-remaining {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .budget-percentage {
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .budget-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .budget-card-actions button {
+            flex: 1;
+            min-height: 36px;
+            padding: 8px 10px;
+            font-size: 11px;
+        }
+
+        .budget-form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .budget-form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .budget-message {
+            margin-bottom: 20px;
+        }
+
+        .budget-empty {
+            grid-column: 1 / -1;
+            padding: 38px 20px;
+            text-align: center;
+            background: var(--surface-soft);
+            border: 1px dashed #d9d2fb;
+            border-radius: var(--radius-md);
+        }
+
+        .budget-empty-icon {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .budget-empty h3 {
+            margin: 0 0 8px;
+        }
+
+        .budget-empty p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1050px) {
+            .budget-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .budget-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .budget-hero {
+                align-items: flex-start;
+            }
+
+            .budget-hero-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 17px;
+                font-size: 27px;
+            }
+
+            .budget-summary {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .budget-panel {
+                padding: 17px;
+            }
+
+            .budget-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <h1>✦ SpendWise AI</h1>
+
+    <ul>
+        <li><a href="index.html">▦ Dashboard</a></li>
+        <li><a href="expenses.html">↘ Expenses</a></li>
+        <li><a href="income.html">↗ Income</a></li>
+        <li><a class="active" href="budgets.html">◷ Budgets</a></li>
+        <li><a href="savings.html">♧ Savings</a></li>
+        <li><a href="categories.html">▤ Categories</a></li>
+        <li><a href="ai.html">✧ AI Insights</a></li>
+    </ul>
+</nav>
+
+
+<main class="container">
+
+    <!-- Heading -->
+    <header class="budget-hero">
+        <div>
+            <span class="eyebrow">PLAN SMARTER · SPEND BETTER</span>
+
+            <h1>Budget Management</h1>
+
+            <p>
+                Set spending limits, monitor your progress,
+                and keep your finances on track.
+            </p>
+        </div>
+
+        <div class="budget-hero-icon">◷</div>
+    </header>
+
+
+    <div id="budget-messages"
+         class="budget-message"
+         aria-live="polite">
+    </div>
+
+
+    <!-- Summary cards -->
+    <section class="budget-summary">
+
+        <article class="budget-summary-card">
+            <span>Total budget limits</span>
+            <strong id="total-budget">₹0.00</strong>
+        </article>
+
+        <article class="budget-summary-card">
+            <span>Total spending</span>
+            <strong id="total-spent">₹0.00</strong>
+        </article>
+
+        <article class="budget-summary-card">
+            <span>Remaining budget</span>
+            <strong id="total-remaining">₹0.00</strong>
+        </article>
+
+    </section>
+
+
+    <!-- Month selector -->
+    <section class="budget-toolbar">
+
+        <div>
+            <span class="eyebrow">YOUR SPENDING LIMITS</span>
+            <h2>Budget Overview</h2>
+        </div>
+
+        <div class="form-group">
+            <label for="budget-month">Month</label>
+            <select id="budget-month">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+
+    </section>
+
+
+    <section class="budget-layout">
+
+        <!-- Budget cards -->
+        <article class="budget-panel">
+
+            <h2>Your Budgets</h2>
+
+            <p class="budget-panel-subtitle">
+                See how much you've spent in each category.
+            </p>
+
+            <div class="budget-grid" id="budget-grid">
+                <div class="budget-empty">
+                    <div class="budget-empty-icon">◷</div>
+                    <h3>Loading budgets...</h3>
+                </div>
+            </div>
+
+        </article>
+
+
+        <!-- Create or edit budget -->
+        <article class="budget-panel" id="budget-form-panel">
+
+            <span class="eyebrow">TAKE CONTROL</span>
+
+            <h2 id="budget-form-title">Create a Budget</h2>
+
+            <p class="budget-panel-subtitle">
+                Choose a category and set its spending limit.
+            </p>
+
+            <form id="budget-form">
+
+                <input type="hidden" id="budget-id">
+
+                <div class="budget-form-grid">
+
+                    <div class="form-group">
+                        <label for="budget-category">Category</label>
+
+                        <select id="budget-category" required>
+                            <option value="">Select category</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget-amount">Budget limit (₹)</label>
+
+                        <input
+                                type="number"
+                                id="budget-amount"
+                                min="0.01"
+                                step="0.01"
+                                placeholder="e.g. 5000"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget-description">Description (optional)</label>
+
+                        <input
+                                type="text"
+                                id="budget-description"
+                                maxlength="255"
+                                placeholder="e.g. Monthly grocery budget"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="budget-form-actions">
+
+                    <button type="submit" id="budget-submit">
+                        ＋ Create Budget
+                    </button>
+
+                    <button
+                            type="button"
+                            id="budget-cancel"
+                            class="secondary-btn"
+                            onclick="resetBudgetForm()"
+                            hidden>
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </article>
+
+    </section>
+
+</main>
+
+
+<script>
+    /* =========================================
+       CURRENCY
+       ========================================= */
+
+    function money(value) {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(Number(value) || 0);
+    }
+
+
+    /* =========================================
+       STATE
+       ========================================= */
+
+    let budgets = [];
+    let categories = [];
+    let spendingByCategory = {};
+
+
+    /* =========================================
+       API HELPER
+       ========================================= */
+
+    async function requestJson(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: 'same-origin',
+            ...options
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Request failed with status ${response.status}`
+            );
+        }
+
+        if (response.status === 204) {
+            return null;
+        }
+
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
+    }
+
+
+    /* =========================================
+       MESSAGE
+       ========================================= */
+
+    function showMessage(text, type = 'info') {
+        const container =
+            document.getElementById('budget-messages');
+
+        container.replaceChildren();
+
+        const message = document.createElement('div');
+        message.className = `message ${type}`;
+        message.textContent = text;
+
+        container.appendChild(message);
+
+        setTimeout(() => {
+            if (message.parentNode === container) {
+                message.remove();
+            }
+        }, 5000);
+    }
+
+
+    /* =========================================
+       LOAD CATEGORIES
+       ========================================= */
+
+    async function loadCategories() {
+        try {
+            const data = await requestJson('/categories');
+
+            categories = Array.isArray(data) ? data : [];
+
+            const select =
+                document.getElementById('budget-category');
+
+            select.replaceChildren();
+
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = 'Select category';
+
+            select.appendChild(placeholder);
+
+            categories
+                .filter(category => category.type === 'EXPENSE')
+                .forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    select.appendChild(option);
+                });
+
+        } catch (error) {
+            console.error('Could not load categories:', error);
+
+            showMessage(
+                'Could not load categories. Check the backend.',
+                'error'
+            );
+        }
+    }
+
+
+    /* =========================================
+       LOAD BUDGETS
+       ========================================= */
+
+    async function loadBudgets() {
+        try {
+            const data = await requestJson('/budgets');
+
+            budgets = Array.isArray(data) ? data : [];
+
+            await loadSpending();
+
+            renderBudgets();
+
+        } catch (error) {
+            console.error('Could not load budgets:', error);
+
+            document.getElementById('budget-grid').textContent =
+                'Could not load budgets. Check your login session and backend.';
+
+            showMessage(
+                'Could not load budgets. Please refresh the page.',
+                'error'
+            );
+        }
+    }
+
+
+    /* =========================================
+       LOAD CATEGORY SPENDING
+       ========================================= */
+
+    async function loadSpending() {
+        const month =
+            document.getElementById('budget-month').value;
+
+        const year = new Date().getFullYear();
+
+        try {
+            const data = await requestJson(
+                `/expenses/by-category?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`
+            );
+
+            spendingByCategory =
+                data && typeof data === 'object' && !Array.isArray(data)
+                    ? data
+                    : {};
+
+        } catch (error) {
+            console.error('Could not load spending:', error);
+
+            spendingByCategory = {};
+        }
+    }
+
+
+    /* =========================================
+       GET CATEGORY NAME
+       ========================================= */
+
+    function getCategoryName(budget) {
+        if (budget.category && budget.category.name) {
+            return budget.category.name;
+        }
+
+        const category = categories.find(
+            item =>
+                String(item.id) === String(budget.categoryId)
+        );
+
+        return category ? category.name : 'Uncategorized';
+    }
+
+
+    /* =========================================
+       RENDER BUDGETS
+       ========================================= */
+
+    function renderBudgets() {
+        const grid = document.getElementById('budget-grid');
+
+        grid.replaceChildren();
+
+        let totalLimit = 0;
+        let totalSpent = 0;
+
+        if (budgets.length === 0) {
+            const empty = document.createElement('div');
+
+            empty.className = 'budget-empty';
+
+            const icon = document.createElement('div');
+            icon.className = 'budget-empty-icon';
+            icon.textContent = '◷';
+
+            const heading = document.createElement('h3');
+            heading.textContent = 'No budgets yet';
+
+            const paragraph = document.createElement('p');
+            paragraph.textContent =
+                'Create your first budget to start tracking spending.';
+
+            empty.append(icon, heading, paragraph);
+            grid.appendChild(empty);
+
+            updateSummary(0, 0);
+            return;
+        }
+
+
+        budgets.forEach(budget => {
+            const categoryName = getCategoryName(budget);
+
+            const limit = Number(budget.limitAmount) || 0;
+
+            const spent = Number(
+                spendingByCategory[categoryName]
+            ) || 0;
+
+            const remaining = limit - spent;
+
+            const percentage = limit > 0
+                ? (spent / limit) * 100
+                : 0;
+
+            const cappedPercentage = Math.min(
+                Math.max(percentage, 0),
+                100
+            );
+
+            totalLimit += limit;
+            totalSpent += spent;
+
+
+            let status = 'On track';
+            let statusClass = 'good';
+
+            if (spent > limit) {
+                status = 'Over budget';
+                statusClass = 'over';
+            } else if (limit > 0 && spent >= limit * 0.8) {
+                status = 'Near limit';
+                statusClass = 'near';
+            }
+
+
+            const card = document.createElement('article');
+            card.className = 'budget-card';
+
+
+            const top = document.createElement('div');
+            top.className = 'budget-card-top';
+
+            const categoryInfo = document.createElement('div');
+
+            const icon = document.createElement('div');
+            icon.className = 'budget-category-icon';
+            icon.textContent = '◷';
+
+            const title = document.createElement('h3');
+            title.className = 'budget-category-name';
+            title.textContent = categoryName;
+
+            categoryInfo.append(icon, title);
+
+            const badge = document.createElement('span');
+            badge.className = `budget-status ${statusClass}`;
+            badge.textContent = status;
+
+            top.append(categoryInfo, badge);
+
+
+            const amounts = document.createElement('div');
+            amounts.className = 'budget-amounts';
+
+            const spentText = document.createElement('strong');
+            spentText.className = 'budget-spent';
+            spentText.textContent = money(spent);
+
+            const limitText = document.createElement('span');
+            limitText.className = 'budget-limit';
+            limitText.textContent = `of ${money(limit)}`;
+
+            amounts.append(spentText, limitText);
+
+
+            const progress = document.createElement('div');
+            progress.className = 'budget-progress';
+
+            const fill = document.createElement('div');
+            fill.className = `budget-progress-fill ${statusClass}`;
+            fill.style.width = `${cappedPercentage}%`;
+
+            progress.appendChild(fill);
+
+
+            const footer = document.createElement('div');
+            footer.className = 'budget-footer';
+
+            const remainingText = document.createElement('span');
+            remainingText.className = 'budget-remaining';
+
+            remainingText.textContent = remaining >= 0
+                ? `${money(remaining)} remaining`
+                : `${money(Math.abs(remaining))} over limit`;
+
+            const percentageText = document.createElement('span');
+            percentageText.className = 'budget-percentage';
+            percentageText.textContent = `${Math.round(percentage)}%`;
+
+            footer.append(remainingText, percentageText);
+
+
+            const actions = document.createElement('div');
+            actions.className = 'budget-card-actions';
+
+            const editButton = document.createElement('button');
+            editButton.type = 'button';
+            editButton.className = 'secondary-btn';
+            editButton.textContent = 'Edit';
+
+            editButton.addEventListener('click', () => {
+                editBudget(budget);
+            });
+
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.className = 'delete-btn';
+            deleteButton.textContent = 'Delete';
+
+            deleteButton.addEventListener('click', () => {
+                deleteBudget(budget.id);
+            });
+
+            actions.append(editButton, deleteButton);
+
+            card.append(
+                top,
+                amounts,
+                progress,
+                footer,
+                actions
+            );
+
+            grid.appendChild(card);
+        });
+
+        updateSummary(totalLimit, totalSpent);
+    }
+
+
+    /* =========================================
+       UPDATE SUMMARY
+       ========================================= */
+
+    function updateSummary(totalLimit, totalSpent) {
+        document.getElementById('total-budget').textContent =
+            money(totalLimit);
+
+        document.getElementById('total-spent').textContent =
+            money(totalSpent);
+
+        document.getElementById('total-remaining').textContent =
+            money(totalLimit - totalSpent);
+    }
+
+
+    /* =========================================
+       CREATE OR UPDATE BUDGET
+       ========================================= */
+
+    async function saveBudget(event) {
+        event.preventDefault();
+
+        const id =
+            document.getElementById('budget-id').value;
+
+        const categoryId =
+            document.getElementById('budget-category').value;
+
+        const limitAmount =
+            Number(document.getElementById('budget-amount').value);
+
+        const description =
+            document.getElementById('budget-description').value.trim();
+
+        if (!categoryId) {
+            showMessage('Please select a category.', 'error');
+            return;
+        }
+
+        if (!Number.isFinite(limitAmount) || limitAmount <= 0) {
+            showMessage(
+                'Enter a budget limit greater than zero.',
+                'error'
+            );
+            return;
+        }
+
+        const payload = {
+            limitAmount: limitAmount,
+            description: description,
+            category: {
+                id: Number(categoryId)
+            }
+        };
+
+        const method = id ? 'PUT' : 'POST';
+
+        const url = id
+            ? `/budgets/${encodeURIComponent(id)}`
+            : '/budgets';
+
+        const submitButton =
+            document.getElementById('budget-submit');
+
+        submitButton.disabled = true;
+        submitButton.textContent =
+            id ? 'Updating...' : 'Creating...';
+
+        try {
+            await requestJson(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            showMessage(
+                id
+                    ? 'Budget updated successfully.'
+                    : 'Budget created successfully.',
+                'success'
+            );
+
+            resetBudgetForm();
+            await loadBudgets();
+
+        } catch (error) {
+            console.error('Error saving budget:', error);
+
+            showMessage(
+                'Could not save the budget. Verify your backend endpoint and required fields.',
+                'error'
+            );
+
+        } finally {
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                document.getElementById('budget-id').value
+                    ? '✓ Update Budget'
+                    : '＋ Create Budget';
+        }
+    }
+
+
+    /* =========================================
+       EDIT BUDGET
+       ========================================= */
+
+    function editBudget(budget) {
+        document.getElementById('budget-id').value =
+            budget.id;
+
+        document.getElementById('budget-category').value =
+            budget.category
+                ? budget.category.id
+                : budget.categoryId || '';
+
+        document.getElementById('budget-amount').value =
+            budget.limitAmount ?? '';
+
+        document.getElementById('budget-description').value =
+            budget.description || '';
+
+        document.getElementById('budget-form-title').textContent =
+            'Edit Budget';
+
+        document.getElementById('budget-submit').textContent =
+            '✓ Update Budget';
+
+        document.getElementById('budget-cancel').hidden = false;
+
+        document.getElementById('budget-form-panel')
+            .scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+    }
+
+
+    /* =========================================
+       DELETE BUDGET
+       ========================================= */
+
+    async function deleteBudget(id) {
+        if (!window.confirm('Delete this budget?')) {
+            return;
+        }
+
+        try {
+            await requestJson(
+                `/budgets/${encodeURIComponent(id)}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+            showMessage(
+                'Budget deleted successfully.',
+                'success'
+            );
+
+            await loadBudgets();
+
+        } catch (error) {
+            console.error('Error deleting budget:', error);
+
+            showMessage(
+                'Could not delete the budget. Please try again.',
+                'error'
+            );
+        }
+    }
+
+
+    /* =========================================
+       RESET FORM
+       ========================================= */
+
+    function resetBudgetForm() {
+        document.getElementById('budget-form').reset();
+
+        document.getElementById('budget-id').value = '';
+
+        document.getElementById('budget-form-title').textContent =
+            'Create a Budget';
+
+        document.getElementById('budget-submit').textContent =
+            '＋ Create Budget';
+
+        document.getElementById('budget-cancel').hidden = true;
+    }
+
+
+    /* =========================================
+       MONTH CHANGE
+       ========================================= */
+
+    document.getElementById('budget-month')
+        .addEventListener('change', async () => {
+            await loadSpending();
+            renderBudgets();
+        });
+
+
+    /* =========================================
+       INITIALIZE
+       ========================================= */
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('budget-month').value =
+            String(new Date().getMonth() + 1);
+
+        document.getElementById('budget-form')
+            .addEventListener('submit', saveBudget);
+
+        await loadCategories();
+        await loadBudgets();
+    });
+</script>
+
+<script src="/auth-session.js"></script>
+
+</body>
+</html>

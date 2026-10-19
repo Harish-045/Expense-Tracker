@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories | SpendWise AI</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--text-muted, #718096);
+        }
+
+        .category-layout {
+            display: grid;
+            grid-template-columns: 350px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .category-panel {
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #e8eaf0);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 28px rgba(31, 41, 55, 0.04);
+        }
+
+        .panel-heading {
+            margin-bottom: 22px;
+        }
+
+        .panel-heading h2 {
+            margin: 0 0 7px;
+            font-size: 20px;
+        }
+
+        .panel-heading p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted, #718096);
+        }
+
+        .category-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .category-stat {
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #e8eaf0);
+        }
+
+        .category-stat .stat-label {
+            color: var(--text-muted, #718096);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .category-stat .stat-value {
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .category-stat .stat-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            font-size: 19px;
+        }
+
+        .icon-purple {
+            background: #eee9ff;
+            color: #7157d9;
+        }
+
+        .icon-green {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .icon-orange {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea,
+        .filter-select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color, #dfe3eb);
+            border-radius: 11px;
+            background: var(--input-bg, #fff);
+            color: var(--text-color, #1f2937);
+            font: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .filter-select:focus {
+            border-color: #7c5ce0;
+            box-shadow: 0 0 0 3px rgba(124, 92, 224, 0.12);
+        }
+
+        .form-group textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: #f1f3f7;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .categories-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .categories-toolbar h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .filter-select {
+            width: auto;
+            min-width: 165px;
+            padding: 10px 13px;
+        }
+
+        .category-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .category-table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        .category-table th,
+        .category-table td {
+            text-align: left;
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border-color, #edf0f5);
+        }
+
+        .category-table th {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted, #718096);
+            background: #fafbfe;
+        }
+
+        .category-table td {
+            font-size: 14px;
+        }
+
+        .category-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-avatar {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 13px;
+            font-size: 19px;
+            background: #eee9ff;
+        }
+
+        .category-name {
+            font-weight: 700;
+        }
+
+        .category-subtitle {
+            color: var(--text-muted, #718096);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .type-expense {
+            color: #b91c1c;
+            background: #fee2e2;
+        }
+
+        .type-income {
+            color: #15803d;
+            background: #dcfce7;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            border: none;
+            border-radius: 9px;
+            padding: 8px 11px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .edit-btn {
+            color: #5b45bd;
+            background: #eee9ff;
+        }
+
+        .delete-btn {
+            color: #b91c1c;
+            background: #fee2e2;
+        }
+
+        .action-btn:hover {
+            filter: brightness(0.96);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-muted, #718096);
+        }
+
+        .empty-state .empty-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            color: var(--text-color, #1f2937);
+            margin: 0 0 8px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .message.success {
+            display: block;
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .message.error {
+            display: block;
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .loading-state {
+            padding: 35px;
+            text-align: center;
+            color: var(--text-muted, #718096);
+        }
+
+        @media (max-width: 1000px) {
+            .category-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .category-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .category-panel {
+                padding: 17px;
+            }
+
+            .categories-toolbar {
+                align-items: stretch;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <header class="page-header">
+        <div>
+            <h1>Categories</h1>
+            <p>Organize your income and expenses with custom categories.</p>
+        </div>
+
+        <a href="/index.html" class="btn btn-primary">
+            ← Back to Dashboard
+        </a>
+    </header>
+
+    <section class="category-stats">
+
+        <div class="category-stat">
+            <div class="stat-icon icon-purple">📁</div>
+            <div class="stat-label">Total Categories</div>
+            <div class="stat-value" id="totalCategories">0</div>
+        </div>
+
+        <div class="category-stat">
+            <div class="stat-icon icon-orange">💸</div>
+            <div class="stat-label">Expense Categories</div>
+            <div class="stat-value" id="expenseCategories">0</div>
+        </div>
+
+        <div class="category-stat">
+            <div class="stat-icon icon-green">💰</div>
+            <div class="stat-label">Income Categories</div>
+            <div class="stat-value" id="incomeCategories">0</div>
+        </div>
+
+    </section>
+
+    <div id="messageBox" class="message"></div>
+
+    <main class="category-layout">
+
+        <!-- Add / Edit Category -->
+        <section class="category-panel">
+
+            <div class="panel-heading">
+                <h2 id="formTitle">Create Category</h2>
+                <p>Create categories to organize your transactions.</p>
+            </div>
+
+            <form id="categoryForm">
+
+                <input type="hidden" id="categoryId">
+
+                <div class="form-group">
+                    <label for="categoryName">Category Name *</label>
+                    <input
+                            type="text"
+                            id="categoryName"
+                            placeholder="e.g. Food, Salary, Travel"
+                            maxlength="80"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryType">Category Type *</label>
+                    <select id="categoryType" required>
+                        <option value="EXPENSE">Expense</option>
+                        <option value="INCOME">Income</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        + Add Category
+                    </button>
+
+                    <button
+                            type="button"
+                            class="btn btn-cancel"
+                            id="cancelButton"
+                            hidden
+                    >
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- Categories List -->
+        <section class="category-panel">
+
+            <div class="categories-toolbar">
+                <div>
+                    <h2>Your Categories</h2>
+                    <p style="color: var(--text-muted, #718096); font-size: 13px;">
+                        Manage your income and expense categories.
+                    </p>
+                </div>
+
+                <select id="typeFilter" class="filter-select">
+                    <option value="ALL">All Categories</option>
+                    <option value="EXPENSE">Expense Only</option>
+                    <option value="INCOME">Income Only</option>
+                </select>
+            </div>
+
+            <div class="category-table-wrapper">
+                <table class="category-table">
+                    <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="categoryTableBody">
+                    <tr>
+                        <td colspan="3" class="loading-state">
+                            Loading categories...
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/auth-session.js"></script>
+
+<script>
+    const API_URL = "/categories";
+
+    let categories = [];
+
+    const form = document.getElementById("categoryForm");
+    const categoryIdInput = document.getElementById("categoryId");
+    const categoryNameInput = document.getElementById("categoryName");
+    const categoryTypeInput = document.getElementById("categoryType");
+    const tableBody = document.getElementById("categoryTableBody");
+    const typeFilter = document.getElementById("typeFilter");
+    const messageBox = document.getElementById("messageBox");
+    const submitButton = document.getElementById("submitButton");
+    const cancelButton = document.getElementById("cancelButton");
+
+    async function apiRequest(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: "same-origin",
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
+        });
+
+        if (!response.ok) {
+            let message = `Request failed (${response.status})`;
+
+            try {
+                const data = await response.json();
+                message = data.message || data.error || message;
+            } catch {
+                try {
+                    const text = await response.text();
+                    if (text) message = text;
+                } catch {}
+            }
+
+            throw new Error(message);
+        }
+
+        if (response.status === 204) {
+            return null;
+        }
+
+        const contentType = response.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+            return response.json();
+        }
+
+        return null;
+    }
+
+    function showMessage(message, type = "success") {
+        messageBox.textContent = message;
+        messageBox.className = `message ${type}`;
+
+        window.clearTimeout(showMessage.timeoutId);
+
+        showMessage.timeoutId = window.setTimeout(() => {
+            messageBox.className = "message";
+            messageBox.textContent = "";
+        }, 4000);
+    }
+
+    function normalizeType(type) {
+        return String(type || "").toUpperCase();
+    }
+
+    function getCategoryIcon(category) {
+        const name = String(category.name || "").toLowerCase();
+
+        if (name.includes("food") || name.includes("grocery")) return "🍔";
+        if (name.includes("salary") || name.includes("income")) return "💰";
+        if (name.includes("travel") || name.includes("transport")) return "🚗";
+        if (name.includes("health") || name.includes("medical")) return "🏥";
+        if (name.includes("shop") || name.includes("cloth")) return "🛍️";
+        if (name.includes("education") || name.includes("book")) return "📚";
+        if (name.includes("bill") || name.includes("utilit")) return "💡";
+        if (name.includes("rent") || name.includes("house")) return "🏠";
+        if (name.includes("entertain")) return "🎬";
+        if (normalizeType(category.type) === "INCOME") return "💵";
+
+        return "📂";
+    }
+
+    function updateStats() {
+        const expenseCount = categories.filter(
+            category => normalizeType(category.type) === "EXPENSE"
+        ).length;
+
+        const incomeCount = categories.filter(
+            category => normalizeType(category.type) === "INCOME"
+        ).length;
+
+        document.getElementById("totalCategories").textContent =
+            categories.length;
+
+        document.getElementById("expenseCategories").textContent =
+            expenseCount;
+
+        document.getElementById("incomeCategories").textContent =
+            incomeCount;
+    }
+
+    function renderCategories() {
+        const selectedType = typeFilter.value;
+
+        const filteredCategories = categories.filter(category => {
+            if (selectedType === "ALL") return true;
+
+            return normalizeType(category.type) === selectedType;
+        });
+
+        if (filteredCategories.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3">
+                        <div class="empty-state">
+                            <div class="empty-icon">📂</div>
+                            <h3>No categories found</h3>
+                            <p>Create a category or change the selected filter.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tableBody.innerHTML = filteredCategories.map(category => {
+            const type = normalizeType(category.type);
+            const badgeClass =
+                type === "INCOME" ? "type-income" : "type-expense";
+
+            const badgeText =
+                type === "INCOME" ? "INCOME" : "EXPENSE";
+
+            return `
+                <tr>
+                    <td>
+                        <div class="category-name-cell">
+                            <div class="category-avatar">
+                                ${getCategoryIcon(category)}
+                            </div>
+
+                            <div>
+                                <div class="category-name">
+                                    ${escapeHtml(category.name || "Unnamed")}
+                                </div>
+                                <div class="category-subtitle">
+                                    Category #${escapeHtml(String(category.id ?? "—"))}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="type-badge ${badgeClass}">
+                            ${badgeText}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="action-buttons">
+                            <button
+                                type="button"
+                                class="action-btn edit-btn"
+                                data-action="edit"
+                                data-id="${escapeHtml(String(category.id))}"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                type="button"
+                                class="action-btn delete-btn"
+                                data-action="delete"
+                                data-id="${escapeHtml(String(category.id))}"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    async function loadCategories() {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="3" class="loading-state">
+                    Loading categories...
+                </td>
+            </tr>
+        `;
+
+        try {
+            const data = await apiRequest(API_URL);
+
+            categories = Array.isArray(data)
+                ? data
+                : Array.isArray(data?.content)
+                    ? data.content
+                    : [];
+
+            updateStats();
+            renderCategories();
+
+        } catch (error) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="loading-state">
+                        Could not load categories.
+                    </td>
+                </tr>
+            `;
+
+            showMessage(
+                error.message || "Unable to load categories.",
+                "error"
+            );
+        }
+    }
+
+    function resetForm() {
+        form.reset();
+        categoryIdInput.value = "";
+        categoryTypeInput.value = "EXPENSE";
+
+        document.getElementById("formTitle").textContent =
+            "Create Category";
+
+        submitButton.textContent = "+ Add Category";
+        cancelButton.hidden = true;
+    }
+
+    function editCategory(id) {
+        const category = categories.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!category) {
+            showMessage("Category not found.", "error");
+            return;
+        }
+
+        categoryIdInput.value = category.id;
+        categoryNameInput.value = category.name || "";
+
+        const type = normalizeType(category.type);
+        categoryTypeInput.value =
+            type === "INCOME" ? "INCOME" : "EXPENSE";
+
+        document.getElementById("formTitle").textContent =
+            "Edit Category";
+
+        submitButton.textContent = "Save Changes";
+        cancelButton.hidden = false;
+
+        document.querySelector(".category-layout").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        categoryNameInput.focus();
+    }
+
+    async function deleteCategory(id) {
+        const category = categories.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!category) return;
+
+        const confirmed = window.confirm(
+            `Delete the category "${category.name}"?\n\n` +
+            "Your backend may prevent deletion if transactions use this category."
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await apiRequest(`${API_URL}/${encodeURIComponent(id)}`, {
+                method: "DELETE"
+            });
+
+            showMessage("Category deleted successfully.");
+
+            if (String(categoryIdInput.value) === String(id)) {
+                resetForm();
+            }
+
+            await loadCategories();
+
+        } catch (error) {
+            showMessage(
+                error.message || "Could not delete category.",
+                "error"
+            );
+        }
+    }
+
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const name = categoryNameInput.value.trim();
+        const type = categoryTypeInput.value;
+        const id = categoryIdInput.value;
+
+        if (!name) {
+            showMessage("Please enter a category name.", "error");
+            categoryNameInput.focus();
+            return;
+        }
+
+        const duplicate = categories.some(category =>
+            String(category.name || "").trim().toLowerCase() ===
+                name.toLowerCase() &&
+            normalizeType(category.type) === normalizeType(type) &&
+            String(category.id) !== String(id)
+        );
+
+        if (duplicate) {
+            showMessage(
+                "A category with this name and type already exists.",
+                "error"
+            );
+            return;
+        }
+
+        const payload = {
+            name: name,
+            type: type
+        };
+
+        submitButton.disabled = true;
+        submitButton.textContent = id ? "Saving..." : "Adding...";
+
+        try {
+            if (id) {
+                await apiRequest(
+                    `${API_URL}/${encodeURIComponent(id)}`,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                showMessage("Category updated successfully.");
+            } else {
+                await apiRequest(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+
+                showMessage("Category created successfully.");
+            }
+
+            resetForm();
+            await loadCategories();
+
+        } catch (error) {
+            showMessage(
+                error.message || "Could not save category.",
+                "error"
+            );
+        } finally {
+            submitButton.disabled = false;
+
+            if (!categoryIdInput.value) {
+                submitButton.textContent = "+ Add Category";
+            } else {
+                submitButton.textContent = "Save Changes";
+            }
+        }
+    });
+
+    tableBody.addEventListener("click", event => {
+        const button = event.target.closest("button[data-action]");
+
+        if (!button) return;
+
+        const action = button.dataset.action;
+        const id = button.dataset.id;
+
+        if (action === "edit") {
+            editCategory(id);
+        } else if (action === "delete") {
+            deleteCategory(id);
+        }
+    });
+
+    typeFilter.addEventListener("change", renderCategories);
+    cancelButton.addEventListener("click", resetForm);
+
+    document.addEventListener("DOMContentLoaded", loadCategories);
+
+    // Also load immediately if this script runs after the page has loaded.
+    if (document.readyState !== "loading") {
+        loadCategories();
+    }
+</script>
+
+</body>
+</html>

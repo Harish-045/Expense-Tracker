@@ -1,0 +1,21 @@
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+application-local.properties
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

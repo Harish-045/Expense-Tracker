@@ -1,0 +1,25 @@
+services:
+  spendwise:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: spendwise-ai:latest
+    container_name: spendwise-ai
+
+    restart: unless-stopped
+
+    ports:
+      - "8090:8090"
+
+    env_file:
+      - .env
+
+    environment:
+      SERVER_PORT: "8090"
+
+      DB_URL: "jdbc:mysql://host.docker.internal:3306/spendwise_ai"
+      DB_USERNAME: "spendwise_app"
+
+      OLLAMA_URL: "http://host.docker.internal:11434/api/generate"
+      OLLAMA_MODEL: "llama3.2:3b"

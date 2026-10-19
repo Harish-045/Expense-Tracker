@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Savings Goals | SpendWise AI</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .savings-page {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .savings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .savings-header h1 {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 0 0 8px;
+        }
+
+        .savings-header p {
+            color: #718096;
+            margin: 0;
+        }
+
+        .savings-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .savings-stat {
+            padding: 24px;
+            border-radius: 20px;
+            background: #fff;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 8px 25px rgba(30, 41, 59, 0.04);
+        }
+
+        .stat-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            font-size: 21px;
+        }
+
+        .icon-purple {
+            color: #6d4fd1;
+            background: #eee8ff;
+        }
+
+        .icon-green {
+            color: #15803d;
+            background: #dcfce7;
+        }
+
+        .icon-blue {
+            color: #1d4ed8;
+            background: #dbeafe;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+            font-weight: 800;
+            color: #1e293b;
+            overflow-wrap: anywhere;
+        }
+
+        .savings-layout {
+            display: grid;
+            grid-template-columns: 350px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e9edf4;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(30, 41, 59, 0.04);
+        }
+
+        .panel-title {
+            font-size: 21px;
+            font-weight: 800;
+            margin: 0 0 8px;
+        }
+
+        .panel-subtitle {
+            font-size: 13px;
+            color: #718096;
+            margin: 0 0 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .filter-select {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #dfe4ec;
+            border-radius: 11px;
+            padding: 12px 14px;
+            font: inherit;
+            color: #1e293b;
+            background: #fff;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group textarea {
+            min-height: 85px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .filter-select:focus {
+            border-color: #7c5ce0;
+            box-shadow: 0 0 0 3px rgba(124, 92, 224, 0.12);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #f1f3f7;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .goals-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .goals-toolbar h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .filter-select {
+            width: auto;
+            min-width: 155px;
+            padding: 10px 13px;
+        }
+
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .goal-card {
+            padding: 22px;
+            border: 1px solid #e9edf4;
+            border-radius: 17px;
+            background: linear-gradient(180deg, #fff 0%, #fcfbff 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 0;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(30, 41, 59, 0.07);
+        }
+
+        .goal-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .goal-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            font-size: 23px;
+            background: #eee8ff;
+            flex-shrink: 0;
+        }
+
+        .goal-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin: 0 0 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .goal-description {
+            color: #718096;
+            font-size: 12px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .goal-status {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            color: #5b45bd;
+            background: #eee8ff;
+        }
+
+        .status-completed {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .goal-amounts {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 20px 0 12px;
+        }
+
+        .goal-amount-label {
+            color: #718096;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .goal-amount-value {
+            font-size: 17px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .goal-target {
+            text-align: right;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 9px;
+            border-radius: 20px;
+            background: #edf0f7;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #8065e8, #a78bfa);
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.completed {
+            background: linear-gradient(90deg, #16a34a, #4ade80);
+        }
+
+        .goal-progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 9px;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .goal-progress-percent {
+            color: #6d4fd1;
+            font-weight: 800;
+        }
+
+        .goal-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 21px;
+            padding-top: 17px;
+            border-top: 1px solid #edf0f5;
+        }
+
+        .goal-actions button {
+            flex: 1;
+            padding: 9px;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .edit-btn {
+            background: #eee8ff;
+            color: #5b45bd;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .empty-state,
+        .loading-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 45px 20px;
+            color: #718096;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            color: #1e293b;
+            margin: 0 0 8px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+
+        .message.success {
+            display: block;
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .message.error {
+            display: block;
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        @media (max-width: 1050px) {
+            .savings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .goals-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .savings-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .goals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .savings-header h1 {
+                font-size: 25px;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            .goals-toolbar {
+                align-items: stretch;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="savings-page">
+
+    <header class="savings-header">
+        <div>
+            <h1>My Savings Goals 🎯</h1>
+            <p>Turn your financial dreams into achievable goals.</p>
+        </div>
+
+        <a href="/index.html" class="btn btn-primary">
+            ← Dashboard
+        </a>
+    </header>
+
+    <!-- Summary Cards -->
+    <section class="savings-stats">
+
+        <div class="savings-stat">
+            <div class="stat-icon icon-purple">🎯</div>
+            <div class="stat-label">Total Savings Goals</div>
+            <div class="stat-value" id="totalGoals">0</div>
+        </div>
+
+        <div class="savings-stat">
+            <div class="stat-icon icon-green">💰</div>
+            <div class="stat-label">Total Saved</div>
+            <div class="stat-value" id="totalSaved">₹0</div>
+        </div>
+
+        <div class="savings-stat">
+            <div class="stat-icon icon-blue">🏆</div>
+            <div class="stat-label">Total Target</div>
+            <div class="stat-value" id="totalTarget">₹0</div>
+        </div>
+
+    </section>
+
+    <div id="messageBox" class="message"></div>
+
+    <main class="savings-layout">
+
+        <!-- Create / Edit Goal -->
+        <section class="panel">
+
+            <h2 class="panel-title" id="formTitle">Create Savings Goal</h2>
+
+            <p class="panel-subtitle">
+                Define a goal and track your progress.
+            </p>
+
+            <form id="savingsForm">
+
+                <input type="hidden" id="goalId">
+
+                <div class="form-group">
+                    <label for="goalName">Goal Name *</label>
+                    <input
+                            type="text"
+                            id="goalName"
+                            maxlength="100"
+                            placeholder="e.g. Buy a Laptop"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="targetAmount">Target Amount (₹) *</label>
+                    <input
+                            type="number"
+                            id="targetAmount"
+                            min="0.01"
+                            step="0.01"
+                            placeholder="50000"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="savedAmount">Amount Already Saved (₹) *</label>
+                    <input
+                            type="number"
+                            id="savedAmount"
+                            min="0"
+                            step="0.01"
+                            value="0"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="targetDate">Target Date</label>
+                    <input type="date" id="targetDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="goalDescription">Description</label>
+                    <textarea
+                            id="goalDescription"
+                            maxlength="500"
+                            placeholder="Why is this goal important to you?"
+                    ></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="submitButton"
+                    >
+                        + Create Goal
+                    </button>
+
+                    <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="cancelButton"
+                            hidden
+                    >
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- Goals List -->
+        <section class="panel">
+
+            <div class="goals-toolbar">
+                <div>
+                    <h2>Your Goals</h2>
+                    <p class="panel-subtitle" style="margin: 7px 0 0;">
+                        Track your progress and stay motivated.
+                    </p>
+                </div>
+
+                <select id="goalFilter" class="filter-select">
+                    <option value="ALL">All Goals</option>
+                    <option value="ACTIVE">Active Goals</option>
+                    <option value="COMPLETED">Completed Goals</option>
+                </select>
+            </div>
+
+            <div id="goalsGrid" class="goals-grid">
+                <div class="loading-state">Loading savings goals...</div>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/auth-session.js"></script>
+
+<script>
+    const API_URL = "/savings";
+
+    let goals = [];
+
+    const form = document.getElementById("savingsForm");
+    const goalIdInput = document.getElementById("goalId");
+    const goalNameInput = document.getElementById("goalName");
+    const targetAmountInput = document.getElementById("targetAmount");
+    const savedAmountInput = document.getElementById("savedAmount");
+    const targetDateInput = document.getElementById("targetDate");
+    const descriptionInput = document.getElementById("goalDescription");
+    const goalsGrid = document.getElementById("goalsGrid");
+    const goalFilter = document.getElementById("goalFilter");
+    const messageBox = document.getElementById("messageBox");
+    const submitButton = document.getElementById("submitButton");
+    const cancelButton = document.getElementById("cancelButton");
+
+    const moneyFormatter = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2
+    });
+
+    function money(value) {
+        const number = Number(value);
+
+        return moneyFormatter.format(
+            Number.isFinite(number) ? number : 0
+        );
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    async function apiRequest(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: "same-origin",
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
+        });
+
+        if (!response.ok) {
+            let message = `Request failed (${response.status})`;
+
+            try {
+                const data = await response.json();
+                message = data.message || data.error || message;
+            } catch {
+                try {
+                    const text = await response.text();
+                    if (text) message = text;
+                } catch {}
+            }
+
+            throw new Error(message);
+        }
+
+        if (response.status === 204) {
+            return null;
+        }
+
+        const contentType = response.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+            return response.json();
+        }
+
+        return null;
+    }
+
+    function getGoalName(goal) {
+        return goal.name ?? goal.goalName ?? goal.title ?? "Savings Goal";
+    }
+
+    function getTarget(goal) {
+        return Number(
+            goal.targetAmount ?? goal.target ?? goal.goalAmount ?? 0
+        );
+    }
+
+    function getSaved(goal) {
+        return Number(
+            goal.savedAmount ?? goal.currentAmount ?? goal.amountSaved ?? 0
+        );
+    }
+
+    function getDescription(goal) {
+        return goal.description ?? "";
+    }
+
+    function getTargetDate(goal) {
+        return goal.targetDate ?? goal.deadline ?? "";
+    }
+
+    function getProgress(goal) {
+        const target = getTarget(goal);
+        const saved = getSaved(goal);
+
+        if (target <= 0) return 0;
+
+        return Math.min(100, Math.max(0, (saved / target) * 100));
+    }
+
+    function isCompleted(goal) {
+        return getTarget(goal) > 0 && getSaved(goal) >= getTarget(goal);
+    }
+
+    function showMessage(message, type = "success") {
+        messageBox.textContent = message;
+        messageBox.className = `message ${type}`;
+
+        clearTimeout(showMessage.timeoutId);
+
+        showMessage.timeoutId = setTimeout(() => {
+            messageBox.className = "message";
+            messageBox.textContent = "";
+        }, 4000);
+    }
+
+    function updateStats() {
+        const totalSaved = goals.reduce(
+            (sum, goal) => sum + getSaved(goal),
+            0
+        );
+
+        const totalTarget = goals.reduce(
+            (sum, goal) => sum + getTarget(goal),
+            0
+        );
+
+        document.getElementById("totalGoals").textContent = goals.length;
+
+        document.getElementById("totalSaved").textContent =
+            money(totalSaved);
+
+        document.getElementById("totalTarget").textContent =
+            money(totalTarget);
+    }
+
+    function getGoalIcon(goal) {
+        const name = getGoalName(goal).toLowerCase();
+
+        if (name.includes("laptop") || name.includes("computer")) return "💻";
+        if (name.includes("car") || name.includes("bike")) return "🚗";
+        if (name.includes("home") || name.includes("house")) return "🏠";
+        if (name.includes("travel") || name.includes("trip")) return "✈️";
+        if (name.includes("education") || name.includes("college")) return "🎓";
+        if (name.includes("emergency")) return "🛡️";
+        if (name.includes("phone")) return "📱";
+        if (name.includes("wedding")) return "💍";
+
+        return "🎯";
+    }
+
+    function formatDate(dateValue) {
+        if (!dateValue) return "No target date";
+
+        const date = new Date(dateValue + "T00:00:00");
+
+        if (Number.isNaN(date.getTime())) {
+            return escapeHtml(dateValue);
+        }
+
+        return date.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    function renderGoals() {
+        const filter = goalFilter.value;
+
+        const filteredGoals = goals.filter(goal => {
+            if (filter === "ACTIVE") return !isCompleted(goal);
+            if (filter === "COMPLETED") return isCompleted(goal);
+
+            return true;
+        });
+
+        if (filteredGoals.length === 0) {
+            goalsGrid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🎯</div>
+                    <h3>No savings goals found</h3>
+                    <p>Create a goal to start tracking your savings.</p>
+                </div>
+            `;
+            return;
+        }
+
+        goalsGrid.innerHTML = filteredGoals.map(goal => {
+            const target = getTarget(goal);
+            const saved = getSaved(goal);
+            const remaining = Math.max(0, target - saved);
+            const progress = getProgress(goal);
+            const completed = isCompleted(goal);
+
+            return `
+                <article class="goal-card">
+
+                    <div class="goal-top">
+                        <div style="display:flex;gap:13px;min-width:0;">
+                            <div class="goal-icon">${getGoalIcon(goal)}</div>
+
+                            <div style="min-width:0;">
+                                <h3 class="goal-title">
+                                    ${escapeHtml(getGoalName(goal))}
+                                </h3>
+
+                                <div class="goal-description">
+                                    ${escapeHtml(
+                                        getDescription(goal) ||
+                                        "Keep saving to reach your goal."
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="goal-status ${
+                            completed ? "status-completed" : "status-active"
+                        }">
+                            ${completed ? "COMPLETED" : "ACTIVE"}
+                        </span>
+                    </div>
+
+                    <div class="goal-amounts">
+                        <div>
+                            <div class="goal-amount-label">Already Saved</div>
+                            <div class="goal-amount-value">
+                                ${money(saved)}
+                            </div>
+                        </div>
+
+                        <div class="goal-target">
+                            <div class="goal-amount-label">Target</div>
+                            <div class="goal-amount-value">
+                                ${money(target)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-track"
+                         role="progressbar"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="${progress.toFixed(0)}">
+
+                        <div
+                            class="progress-fill ${
+                                completed ? "completed" : ""
+                            }"
+                            style="width:${progress}%"
+                        ></div>
+                    </div>
+
+                    <div class="goal-progress-info">
+                        <span>
+                            ${
+                                completed
+                                    ? "Goal achieved! 🎉"
+                                    : money(remaining) + " left to save"
+                            }
+                        </span>
+
+                        <span class="goal-progress-percent">
+                            ${progress.toFixed(0)}%
+                        </span>
+                    </div>
+
+                    <div class="goal-description" style="margin-top:13px;">
+                        📅 Target date: ${formatDate(getTargetDate(goal))}
+                    </div>
+
+                    <div class="goal-actions">
+                        <button
+                            type="button"
+                            class="edit-btn"
+                            data-action="edit"
+                            data-id="${escapeHtml(String(goal.id))}"
+                        >
+                            Edit Goal
+                        </button>
+
+                        <button
+                            type="button"
+                            class="delete-btn"
+                            data-action="delete"
+                            data-id="${escapeHtml(String(goal.id))}"
+                        >
+                            Delete
+                        </button>
+                    </div>
+
+                </article>
+            `;
+        }).join("");
+    }
+
+    async function loadGoals() {
+        goalsGrid.innerHTML =
+            '<div class="loading-state">Loading savings goals...</div>';
+
+        try {
+            const data = await apiRequest(API_URL);
+
+            goals = Array.isArray(data)
+                ? data
+                : Array.isArray(data?.content)
+                    ? data.content
+                    : [];
+
+            updateStats();
+            renderGoals();
+
+        } catch (error) {
+            goalsGrid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">⚠️</div>
+                    <h3>Could not load savings goals</h3>
+                    <p>Check that your backend is running and the savings API exists.</p>
+                </div>
+            `;
+
+            showMessage(
+                error.message || "Unable to load savings goals.",
+                "error"
+            );
+        }
+    }
+
+    function resetForm() {
+        form.reset();
+        goalIdInput.value = "";
+        savedAmountInput.value = "0";
+
+        document.getElementById("formTitle").textContent =
+            "Create Savings Goal";
+
+        submitButton.textContent = "+ Create Goal";
+        cancelButton.hidden = true;
+    }
+
+    function editGoal(id) {
+        const goal = goals.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!goal) {
+            showMessage("Savings goal not found.", "error");
+            return;
+        }
+
+        goalIdInput.value = goal.id;
+        goalNameInput.value = getGoalName(goal);
+        targetAmountInput.value = getTarget(goal);
+        savedAmountInput.value = getSaved(goal);
+        targetDateInput.value = getTargetDate(goal);
+        descriptionInput.value = getDescription(goal);
+
+        document.getElementById("formTitle").textContent =
+            "Edit Savings Goal";
+
+        submitButton.textContent = "Save Changes";
+        cancelButton.hidden = false;
+
+        form.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        goalNameInput.focus();
+    }
+
+    async function deleteGoal(id) {
+        const goal = goals.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!goal) return;
+
+        const confirmed = confirm(
+            `Are you sure you want to delete "${getGoalName(goal)}"?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await apiRequest(
+                `${API_URL}/${encodeURIComponent(id)}`,
+                { method: "DELETE" }
+            );
+
+            showMessage("Savings goal deleted successfully.");
+            await loadGoals();
+
+        } catch (error) {
+            showMessage(
+                error.message || "Could not delete savings goal.",
+                "error"
+            );
+        }
+    }
+
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const name = goalNameInput.value.trim();
+        const targetAmount = Number(targetAmountInput.value);
+        const savedAmount = Number(savedAmountInput.value);
+        const id = goalIdInput.value;
+
+        if (!name) {
+            showMessage("Please enter a goal name.", "error");
+            return;
+        }
+
+        if (!Number.isFinite(targetAmount) || targetAmount <= 0) {
+            showMessage(
+                "Target amount must be greater than zero.",
+                "error"
+            );
+            return;
+        }
+
+        if (!Number.isFinite(savedAmount) || savedAmount < 0) {
+            showMessage(
+                "Saved amount cannot be negative.",
+                "error"
+            );
+            return;
+        }
+
+        if (savedAmount > targetAmount) {
+            const proceed = confirm(
+                "Your saved amount exceeds the target. Continue?"
+            );
+
+            if (!proceed) return;
+        }
+
+        const payload = {
+            name: name,
+            targetAmount: targetAmount,
+            savedAmount: savedAmount,
+            targetDate: targetDateInput.value || null,
+            description: descriptionInput.value.trim()
+        };
+
+        submitButton.disabled = true;
+        submitButton.textContent = id ? "Saving..." : "Creating...";
+
+        try {
+            if (id) {
+                await apiRequest(
+                    `${API_URL}/${encodeURIComponent(id)}`,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                showMessage("Savings goal updated successfully.");
+            } else {
+                await apiRequest(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+
+                showMessage("Savings goal created successfully.");
+            }
+
+            resetForm();
+            await loadGoals();
+
+        } catch (error) {
+            showMessage(
+                error.message || "Could not save savings goal.",
+                "error"
+            );
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = goalIdInput.value
+                ? "Save Changes"
+                : "+ Create Goal";
+        }
+    });
+
+    goalsGrid.addEventListener("click", event => {
+        const button = event.target.closest("button[data-action]");
+
+        if (!button) return;
+
+        if (button.dataset.action === "edit") {
+            editGoal(button.dataset.id);
+        }
+
+        if (button.dataset.action === "delete") {
+            deleteGoal(button.dataset.id);
+        }
+    });
+
+    goalFilter.addEventListener("change", renderGoals);
+
+    cancelButton.addEventListener("click", resetForm);
+
+    document.addEventListener("DOMContentLoaded", loadGoals);
+
+    if (document.readyState !== "loading") {
+        loadGoals();
+    }
+</script>
+
+</body>
+</html>
