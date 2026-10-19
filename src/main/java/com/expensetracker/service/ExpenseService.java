@@ -1,7 +1,6 @@
 package com.expensetracker.service;
 
 import com.expensetracker.model.Budget;
-import com.expensetracker.model.Category;
 import com.expensetracker.model.Expense;
 import com.expensetracker.model.User;
 
@@ -22,6 +21,9 @@ import java.util.Objects;
 @Service
 public class ExpenseService {
 
+    private static final BigDecimal ALERT_THRESHOLD =
+            new BigDecimal("0.80");
+
     @Autowired
     private ExpenseRepository expenseRepository;
 
@@ -38,8 +40,7 @@ public class ExpenseService {
     @Transactional
     public Expense addExpense(Expense expense) {
 
-        Expense savedExpense =
-                expenseRepository.save(expense);
+        Expense savedExpense = expenseRepository.save(expense);
 
         checkBudgetAndSendAlert(savedExpense);
 
@@ -173,36 +174,42 @@ public class ExpenseService {
                 continue;
             }
 
-            if (budget.getLimitAmount() == null) {
+            BigDecimal budgetLimit = budget.getLimitAmount();
+
+            if (budgetLimit == null
+                    || budgetLimit.compareTo(BigDecimal.ZERO) <= 0) {
                 continue;
             }
 
-            boolean exceeded =
-                    totalForCategory.compareTo(
-                            budget.getLimitAmount()
-                    ) > 0;
+            // Calculate 80% of the category budget.
+            BigDecimal alertLimit =
+                    budgetLimit.multiply(ALERT_THRESHOLD);
 
-            if (!exceeded || budget.isAlertSent()) {
+            // Trigger when spending reaches or crosses 80%.
+            boolean thresholdReached =
+                    totalForCategory.compareTo(alertLimit) >= 0;
+
+            // Send only one alert per budget period.
+            if (!thresholdReached || budget.isAlertSent()) {
                 continue;
             }
 
-            String email =
-                    user.getEmail();
+            String email = user.getEmail();
 
             if (email == null || email.isBlank()) {
                 continue;
             }
 
-            boolean sent =
-                    emailService.sendBudgetExceededAlert(
-                            email,
-                            budget.getCategory().getName(),
-                            month,
-                            year,
-                            totalForCategory,
-                            budget.getLimitAmount()
-                    );
+            boolean sent = emailService.sendBudgetExceededAlert(
+                    email,
+                    budget.getCategory().getName(),
+                    month,
+                    year,
+                    totalForCategory,
+                    budgetLimit
+            );
 
+            // Mark the alert as sent only after successful delivery.
             if (sent) {
                 budget.setAlertSent(true);
                 budgetRepository.save(budget);
